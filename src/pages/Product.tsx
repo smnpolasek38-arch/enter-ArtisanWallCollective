@@ -4,11 +4,11 @@ import { useTranslation } from "react-i18next";
 import {
   Check,
   ChevronRight,
+  Clock,
   Minus,
   Plus,
   RotateCcw,
   Ruler,
-  ShieldCheck,
   ShoppingBag,
   Truck,
 } from "lucide-react";
@@ -48,7 +48,7 @@ import { FORMATS, FORMAT_LABELS, type Format } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
 
-const PAD = "mx-auto max-w-[1440px] px-[clamp(1rem,3vw,2rem)]";
+const PAD = "mx-auto max-w-[1600px] px-[clamp(1rem,2vw,2.5rem)]";
 
 const FRAME_SWATCH: Record<string, string> = {
   "white-oak": "#cfa678",
@@ -180,7 +180,7 @@ const Product = () => {
           <span className="text-foreground">{product.name}</span>
         </nav>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-20">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-14">
           {/* Gallery: thumbnail rail on the left of the main image */}
           <div className="lg:sticky lg:top-32 lg:self-start">
             <div className="flex gap-3">
@@ -195,7 +195,7 @@ const Product = () => {
                       count: gallery.length,
                     })}
                     className={cn(
-                      "relative aspect-[3/4] w-20 shrink-0 overflow-hidden bg-muted ring-1 transition md:w-28",
+                      "relative aspect-[3/4] w-24 shrink-0 overflow-hidden bg-muted ring-1 transition md:w-32",
                       activeImage === i
                         ? "ring-foreground"
                         : "opacity-70 ring-transparent hover:opacity-100",
@@ -279,14 +279,21 @@ const Product = () => {
                 </p>
               ) : null}
 
-              <p className="mt-5 max-w-lg leading-relaxed text-muted-foreground">
-                {product.description}
-              </p>
-              {product.longDescription ? (
-                <p className="mt-3 max-w-lg leading-relaxed text-muted-foreground">
-                  {product.longDescription}
-                </p>
-              ) : null}
+              {/* High-conversion trust strip */}
+              <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-border py-4">
+                <span className="flex items-center gap-1.5 text-xs font-medium text-foreground">
+                  <Truck className="h-4 w-4 text-accent" />
+                  {t("product.trust.shipping")}
+                </span>
+                <span className="flex items-center gap-1.5 text-xs font-medium text-foreground">
+                  <Clock className="h-4 w-4 text-accent" />
+                  {t("product.trust.ship24h")}
+                </span>
+                <span className="flex items-center gap-1.5 text-xs font-medium text-foreground">
+                  <RotateCcw className="h-4 w-4 text-accent" />
+                  {t("product.trust.returns")}
+                </span>
+              </div>
             </Reveal>
 
             {/* Format */}
@@ -554,22 +561,6 @@ const Product = () => {
                 </li>
               ))}
             </ul>
-
-            {/* Trust hints */}
-            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <Truck className="h-3.5 w-3.5" />
-                {t("trust.freeShipping.text")}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <RotateCcw className="h-3.5 w-3.5" />
-                {t("trust.returns.title")}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                {t("trust.secure.title")}
-              </span>
-            </div>
 
             {/* Accordion */}
             <Accordion type="single" collapsible className="mt-8 border-t border-border">
