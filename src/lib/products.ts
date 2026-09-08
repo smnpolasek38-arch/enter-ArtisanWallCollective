@@ -120,9 +120,9 @@ export const products: Product[] = [
     longDescription:
       "The gradient was developed over dozens of studio prints, with each layer blended by hand to catch the light like late afternoon sun. It reads differently at every hour — which is exactly why it works in rooms you use all day.",
     formats: {
-      poster: sizes(POSTER_SIZES, 5),
-      framed: sizes(FRAMED_SIZES, 5),
-      canvas: sizes(CANVAS_SIZES, 10),
+      poster: withSale(sizes(POSTER_SIZES, 5), 0.2),
+      framed: withSale(sizes(FRAMED_SIZES, 5), 0.2),
+      canvas: withSale(sizes(CANVAS_SIZES, 10), 0.2),
     },
     frameOptions: FRAMES,
     tags: ["abstract", "warm", "terracotta"],
@@ -294,9 +294,9 @@ export const products: Product[] = [
     longDescription:
       "Painted in three greens and printed large, the single leaf fills the frame like a botanical still life. It brings quiet greenery into rooms with little natural light.",
     formats: {
-      poster: sizes(POSTER_SIZES, -6),
-      framed: sizes(FRAMED_SIZES, -6),
-      canvas: sizes(CANVAS_SIZES, -15),
+      poster: withSale(sizes(POSTER_SIZES, -6), 0.15),
+      framed: withSale(sizes(FRAMED_SIZES, -6), 0.15),
+      canvas: withSale(sizes(CANVAS_SIZES, -15), 0.15),
     },
     frameOptions: FRAMES,
     tags: ["botanical", "green", "leaf"],
@@ -366,9 +366,9 @@ export const products: Product[] = [
     longDescription:
       "Shot at golden hour in southern Italy, the arches compress a whole afternoon of light into one frame. Printed large, it works like a window that never closes.",
     formats: {
-      poster: sizes(POSTER_SIZES),
-      framed: sizes(FRAMED_SIZES, 15),
-      canvas: sizes(CANVAS_SIZES, 20),
+      poster: withSale(sizes(POSTER_SIZES), 0.2),
+      framed: withSale(sizes(FRAMED_SIZES, 15), 0.2),
+      canvas: withSale(sizes(CANVAS_SIZES, 20), 0.2),
     },
     frameOptions: FRAMES,
     tags: ["architecture", "mediterranean", "sun"],
@@ -408,9 +408,9 @@ export const products: Product[] = [
     longDescription:
       "The facade is a strict grid of shade and sun. What reads as repetition from the street becomes rhythm on your wall.",
     formats: {
-      poster: sizes(POSTER_SIZES, -3),
-      framed: sizes(FRAMED_SIZES),
-      canvas: sizes(CANVAS_SIZES, -5),
+      poster: withSale(sizes(POSTER_SIZES, -3), 0.15),
+      framed: withSale(sizes(FRAMED_SIZES), 0.15),
+      canvas: withSale(sizes(CANVAS_SIZES, -5), 0.15),
     },
     frameOptions: FRAMES,
     tags: ["architecture", "minimal", "shadow"],
@@ -486,9 +486,9 @@ export const products: Product[] = [
     longDescription:
       "The sculpture is carved in travertine; the photograph keeps its weight and warmth. It adds gallery presence to hallways and consoles.",
     formats: {
-      poster: sizes(POSTER_SIZES, 3),
-      framed: sizes(FRAMED_SIZES, 8),
-      canvas: sizes(CANVAS_SIZES, 15),
+      poster: withSale(sizes(POSTER_SIZES, 3), 0.2),
+      framed: withSale(sizes(FRAMED_SIZES, 8), 0.2),
+      canvas: withSale(sizes(CANVAS_SIZES, 15), 0.2),
     },
     frameOptions: FRAMES,
     tags: ["figurative", "sculpture", "stone"],
