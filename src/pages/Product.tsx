@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -31,6 +31,7 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import { ProductCard } from "@/components/store/ProductCard";
 import { RatingStars } from "@/components/store/RatingStars";
@@ -48,7 +49,7 @@ import { FORMATS, FORMAT_LABELS, type Format } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
 
-const PAD = "mx-auto max-w-[1600px] px-[clamp(1rem,2vw,2.5rem)]";
+const PAD = "mx-auto max-w-[1440px] px-[clamp(1rem,3vw,2rem)]";
 
 const FRAME_SWATCH: Record<string, string> = {
   "white-oak": "#cfa678",
@@ -73,6 +74,16 @@ const Product = () => {
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [unit, setUnit] = useState<SizeUnit>("cm");
+  const [galleryApi, setGalleryApi] = useState<CarouselApi | null>(null);
+
+  useEffect(() => {
+    if (!galleryApi) return;
+    const onSelect = () => setActiveImage(galleryApi.selectedScrollSnap());
+    galleryApi.on("select", onSelect);
+    return () => {
+      galleryApi.off("select", onSelect);
+    };
+  }, [galleryApi]);
 
   const related = useMemo(() => {
     if (!product) return [];
@@ -180,9 +191,58 @@ const Product = () => {
           <span className="text-foreground">{product.name}</span>
         </nav>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-14">
-          {/* Gallery: thumbnail rail on the left of the main image */}
-          <div className="lg:sticky lg:top-32 lg:self-start">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+          {/* Gallery: mobile swipe slider */}
+          <div className="lg:hidden">
+            <Carousel setApi={setGalleryApi}>
+              <CarouselContent className="ml-0">
+                {gallery.map((src, i) => (
+                  <CarouselItem key={`${src}-${i}`} className="pl-0">
+                    <div className="relative overflow-hidden bg-muted">
+                      <img
+                        src={src}
+                        alt={product.alt}
+                        crossOrigin="anonymous"
+                        className="aspect-[4/5] w-full object-cover"
+                      />
+                      <div className="absolute left-4 top-4 flex flex-col gap-1.5">
+                        {onSale && (
+                          <span className="bg-destructive px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-destructive-foreground">
+                            {t("product.sale")}
+                          </span>
+                        )}
+                        {product.bestseller && (
+                          <span className="bg-background/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground backdrop-blur-sm">
+                            {t("product.bestseller")}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="mt-3 flex justify-center gap-1.5">
+                {gallery.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => galleryApi?.scrollTo(i)}
+                    aria-label={t("product.imageThumb", {
+                      n: i + 1,
+                      count: gallery.length,
+                    })}
+                    className={cn(
+                      "h-1.5 rounded-full transition-all duration-300",
+                      activeImage === i ? "w-6 bg-foreground" : "w-1.5 bg-border",
+                    )}
+                  />
+                ))}
+              </div>
+            </Carousel>
+          </div>
+
+          {/* Gallery: desktop thumbnail rail on the left of the main image */}
+          <div className="hidden lg:sticky lg:top-32 lg:self-start lg:block">
             <div className="flex gap-3">
               <div className="flex shrink-0 flex-col gap-3">
                 {gallery.map((src, i) => (
@@ -217,7 +277,7 @@ const Product = () => {
                   src={gallery[activeImage]}
                   alt={product.alt}
                   crossOrigin="anonymous"
-                  className="aspect-[4/5] w-full animate-in object-cover fade-in duration-500"
+                  className="aspect-[4/5] w-full object-cover"
                 />
                 <div className="absolute left-4 top-4 flex flex-col gap-1.5">
                   {onSale && (
