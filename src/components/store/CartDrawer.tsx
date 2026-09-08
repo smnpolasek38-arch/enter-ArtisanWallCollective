@@ -18,6 +18,7 @@ import {
   productMinPrice,
   products,
 } from "@/lib/products";
+import { cn } from "@/lib/utils";
 
 export const CartDrawer = () => {
   const { t } = useTranslation();
@@ -139,9 +140,21 @@ export const CartDrawer = () => {
                         <Plus className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                    <p className="text-sm font-medium">
-                      {formatPrice(item.unitPrice * item.qty)}
-                    </p>
+                    <div className="text-right">
+                      {item.compareAtPrice != null && (
+                        <p className="text-xs text-muted-foreground line-through">
+                          {formatPrice(item.compareAtPrice * item.qty)}
+                        </p>
+                      )}
+                      <p
+                        className={cn(
+                          "text-sm font-semibold",
+                          item.compareAtPrice != null && "text-destructive",
+                        )}
+                      >
+                        {formatPrice(item.unitPrice * item.qty)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

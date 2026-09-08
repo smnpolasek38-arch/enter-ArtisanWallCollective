@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowRight, Minus, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, Minus, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
@@ -104,9 +104,22 @@ const Cart = () => {
                       <RatingStars rating={5} size="h-3 w-3" />
                     </div>
                   </div>
-                  <p className="text-sm font-medium">
-                    {formatPrice(item.unitPrice)}
-                  </p>
+                  <div className="text-right">
+                    {item.compareAtPrice != null && (
+                      <p className="text-xs text-muted-foreground line-through">
+                        {formatPrice(item.compareAtPrice)}
+                      </p>
+                    )}
+                    <p
+                      className={
+                        item.compareAtPrice != null
+                          ? "text-sm font-semibold text-destructive"
+                          : "text-sm font-medium"
+                      }
+                    >
+                      {formatPrice(item.unitPrice)}
+                    </p>
+                  </div>
                 </div>
                 <div className="mt-auto flex items-center justify-between pt-4">
                   <div className="flex items-center border border-border">
@@ -179,7 +192,31 @@ const Cart = () => {
             {t("cart.checkout")}
             <ArrowRight className="h-4 w-4" />
           </Button>
-          <p className="mt-4 text-center text-xs text-muted-foreground">
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-card px-3 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                {t("cart.or")}
+              </span>
+            </div>
+          </div>
+          <Button
+            variant="cta-outline"
+            size="xl"
+            className="w-full"
+            onClick={() =>
+              toast(t("cart.checkoutNotice"), { position: "top-center" })
+            }
+          >
+            {t("cart.express")}
+          </Button>
+          <div className="mt-5 flex items-center justify-center gap-2 text-center text-xs text-muted-foreground">
+            <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+            {t("cart.guarantee")}
+          </div>
+          <p className="mt-3 text-center text-xs text-muted-foreground">
             {t("cart.taxesNote")}
           </p>
         </aside>

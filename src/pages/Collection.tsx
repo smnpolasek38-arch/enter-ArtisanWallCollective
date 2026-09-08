@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { ProductCard } from "@/components/store/ProductCard";
 import { Reveal } from "@/components/store/Reveal";
+import { TrustBadges } from "@/components/store/TrustBadges";
 import {
   getCollection,
   getCollectionProducts,
@@ -179,6 +180,10 @@ const Collection = () => {
               {t("collection.browseAll")}
             </Button>
           </Link>
+        </div>
+
+        <div className="mt-16 border-t border-border pt-12">
+          <TrustBadges />
         </div>
       </section>
     </div>

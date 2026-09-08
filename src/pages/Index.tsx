@@ -3,6 +3,12 @@ import { useTranslation } from "react-i18next";
 import { ArrowRight, Check, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Carousel,
   CarouselContent,
   CarouselItem,
@@ -25,11 +31,34 @@ import {
 
 const bestsellers = products.filter((p) => p.bestseller);
 
+const PRESS = [
+  "Elle Decor",
+  "Architectural Digest",
+  "Kinfolk",
+  "Monocle",
+  "Vogue Living",
+];
+
 const PAD = "mx-auto max-w-[1440px] px-[clamp(1rem,3vw,2rem)]";
 const SECTION = "py-[clamp(4rem,8vw,8rem)]";
 
 const Index = () => {
   const { t } = useTranslation();
+
+  const stats = [
+    { value: "12k+", label: t("home.stats.homes") },
+    { value: "4.9/5", label: t("home.stats.rating") },
+    { value: "30-day", label: t("home.stats.returns") },
+    { value: "100%", label: t("home.stats.oak") },
+  ];
+
+  const faqs = [
+    { q: t("home.faq.q1"), a: t("home.faq.a1") },
+    { q: t("home.faq.q2"), a: t("home.faq.a2") },
+    { q: t("home.faq.q3"), a: t("home.faq.a3") },
+    { q: t("home.faq.q4"), a: t("home.faq.a4") },
+    { q: t("home.faq.q5"), a: t("home.faq.a5") },
+  ];
 
   const testimonials = [
     {
@@ -95,6 +124,20 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ============ Stats strip ============ */}
+      <section className="border-b border-border bg-card">
+        <div className={`${PAD} grid grid-cols-2 gap-y-8 py-10 lg:grid-cols-4`}>
+          {stats.map((s) => (
+            <div key={s.label} className="text-center">
+              <p className="font-display text-3xl md:text-4xl">{s.value}</p>
+              <p className="mt-1.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                {s.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ============ Collections ============ */}
       <section id="collections" className={`${PAD} ${SECTION} scroll-mt-28`}>
         <SectionHeading
@@ -131,6 +174,20 @@ const Index = () => {
               </Link>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* ============ Press ============ */}
+      <section className={`${PAD} ${SECTION} pb-0`}>
+        <div className="flex flex-col items-center gap-6 border-y border-border py-10">
+          <span className="kicker">{t("home.press.kicker")}</span>
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 opacity-70">
+            {PRESS.map((name) => (
+              <span key={name} className="font-display text-xl md:text-2xl">
+                {name}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -255,6 +312,30 @@ const Index = () => {
       <section className="border-y border-border bg-secondary/50 py-14">
         <div className={`${PAD}`}>
           <TrustBadges />
+        </div>
+      </section>
+
+      {/* ============ FAQ ============ */}
+      <section className={`${PAD} ${SECTION}`}>
+        <SectionHeading
+          align="center"
+          kicker={t("home.faq.kicker")}
+          title={t("home.faq.title")}
+          subtitle={t("home.faq.subtitle")}
+        />
+        <div className="mx-auto max-w-3xl">
+          <Accordion type="single" collapsible className="border-t border-border">
+            {faqs.map((faq, i) => (
+              <AccordionItem key={faq.q} value={`faq-${i}`} className="border-border">
+                <AccordionTrigger className="text-left font-display text-lg">
+                  {faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="leading-relaxed text-muted-foreground">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
 

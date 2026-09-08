@@ -21,6 +21,8 @@ export interface CartItem {
   frame: string | null;
   qty: number;
   unitPrice: number;
+  /** Original (pre-sale) unit price when the variant is on sale. */
+  compareAtPrice?: number;
 }
 
 interface CartContextValue {
@@ -87,8 +89,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const frameOption = frame
         ? product.frameOptions.find((f) => f.id === frame)
         : undefined;
-      const unitPrice =
-        variant.price + (format === "framed" ? frameOption?.upcharge ?? 0 : 0);
+      const frameUpcharge = format === "framed" ? frameOption?.upcharge ?? 0 : 0;
+      const unitPrice = variant.price + frameUpcharge;
+      const compareAtPrice =
+        variant.compareAtPrice != null
+          ? variant.compareAtPrice + frameUpcharge
+          : undefined;
 
       setItems((prev) => {
         const key = [product.slug, format, size, frame ?? "none"].join("|");
@@ -112,6 +118,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             frame: frame ? frameOption?.label ?? null : null,
             qty,
             unitPrice,
+            compareAtPrice,
           },
         ];
       });

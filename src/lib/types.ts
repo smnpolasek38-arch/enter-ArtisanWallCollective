@@ -13,8 +13,10 @@ export interface VariantPrice {
   size: string;
   /** Exact dimensions, e.g. "50 × 70 cm" */
   dims: string;
-  /** Base price in USD (frame upcharge added separately) */
+  /** Sale price in USD (frame upcharge added separately) */
   price: number;
+  /** Original price before the current sale. Present = the variant is on sale. */
+  compareAtPrice?: number;
 }
 
 export interface FrameOption {
@@ -44,9 +46,14 @@ export interface Product {
   name: string;
   artist: string;
   collection: CollectionSlug;
+  /** Primary artwork image */
   image: string;
+  /** Gallery images shown on the product page (artwork, lifestyle, detail). */
+  images: string[];
   alt: string;
   description: string;
+  /** Longer editorial description for the product page. */
+  longDescription?: string;
   formats: Record<Format, VariantPrice[]>;
   frameOptions: FrameOption[];
   tags: string[];
