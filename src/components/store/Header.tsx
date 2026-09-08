@@ -13,7 +13,7 @@ export const Header = () => {
     openCart,
     itemCount
   } = useCart();
-  const navLink = "text-sm text-muted-foreground transition hover:text-foreground";
+  const navLink = "text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground transition hover:text-foreground";
   return <header className="sticky top-0 z-50">
       <div className="bg-foreground px-4 py-2 text-center text-[11px] font-medium uppercase tracking-[0.18em] text-background">
         {t("header.announcement")}
@@ -21,7 +21,7 @@ export const Header = () => {
 
       <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center border-b border-border bg-background/85 px-4 backdrop-blur-md md:h-20 md:px-6 lg:px-10">
         {/* Left: mobile menu + desktop nav */}
-        <nav className="flex items-center 0, 0, 1)] text-left font-[400]">
+        <nav className="flex items-center">
           <Sheet>
             <SheetTrigger asChild>
               <button type="button" aria-label={t("header.menu")} className="flex h-10 w-10 items-center justify-center lg:hidden">
@@ -36,12 +36,12 @@ export const Header = () => {
               </SheetHeader>
               <nav className="flex flex-col gap-1 px-5 py-4">
                 <SheetClose asChild>
-                  <Link to="/collections/all" className="rounded-none px-3 py-3 text-sm text-muted-foreground transition hover:text-foreground">
+                  <Link to="/collections/all" className="rounded-none px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground transition hover:text-foreground">
                     {t("header.shop")}
                   </Link>
                 </SheetClose>
                 {collections.map(c => <SheetClose asChild key={c.slug}>
-                    <Link to={`/collections/${c.slug}`} className="rounded-none px-3 py-3 text-sm text-muted-foreground transition hover:text-foreground">
+                    <Link to={`/collections/${c.slug}`} className="rounded-none px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground transition hover:text-foreground">
                       {c.name}
                     </Link>
                   </SheetClose>)}
