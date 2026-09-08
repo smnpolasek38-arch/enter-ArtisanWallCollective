@@ -27,6 +27,7 @@ import {
   HERO_IMAGE,
   INTERIOR_BEDROOM,
   INTERIOR_GALLERY,
+  FORMAT_IMAGES,
 } from "@/lib/products";
 
 const bestsellers = products.filter((p) => p.bestseller);
@@ -81,6 +82,30 @@ const Index = () => {
     t("home.editorial.feature3"),
   ];
 
+  const formats = [
+    {
+      image: FORMAT_IMAGES.poster,
+      name: t("home.formats.poster.name"),
+      desc: t("home.formats.poster.desc"),
+    },
+    {
+      image: FORMAT_IMAGES.framed,
+      name: t("home.formats.framed.name"),
+      desc: t("home.formats.framed.desc"),
+    },
+    {
+      image: FORMAT_IMAGES.canvas,
+      name: t("home.formats.canvas.name"),
+      desc: t("home.formats.canvas.desc"),
+    },
+  ];
+
+  const steps = [
+    { title: t("home.how.one.title"), text: t("home.how.one.text") },
+    { title: t("home.how.two.title"), text: t("home.how.two.text") },
+    { title: t("home.how.three.title"), text: t("home.how.three.text") },
+  ];
+
   return (
     <div>
       {/* ============ Hero ============ */}
@@ -124,8 +149,41 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ============ Bestsellers (right below the hero) ============ */}
+      <section className={`${PAD} ${SECTION}`}>
+        <div className="flex items-end justify-between gap-6">
+          <SectionHeading
+            kicker={t("home.bestsellers.kicker")}
+            title={t("home.bestsellers.title")}
+            subtitle={t("home.bestsellers.subtitle")}
+            className="mb-0"
+          />
+        </div>
+        <Carousel className="mt-10">
+          <CarouselContent className="-ml-4">
+            {bestsellers.map((p) => (
+              <CarouselItem
+                key={p.slug}
+                className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
+              >
+                <ProductCard product={p} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
+            <span className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+              {t("home.bestsellers.slide")}
+            </span>
+            <div className="flex gap-2">
+              <CarouselPrevious className="static left-auto right-auto top-auto h-10 w-10 -translate-x-0 translate-y-0 rounded-none border border-border bg-card shadow-none hover:bg-foreground hover:text-background" />
+              <CarouselNext className="static left-auto right-auto top-auto h-10 w-10 -translate-x-0 translate-y-0 rounded-none border border-border bg-card shadow-none hover:bg-foreground hover:text-background" />
+            </div>
+          </div>
+        </Carousel>
+      </section>
+
       {/* ============ Stats strip ============ */}
-      <section className="border-b border-border bg-card">
+      <section className="border-y border-border bg-card">
         <div className={`${PAD} grid grid-cols-2 gap-y-8 py-10 lg:grid-cols-4`}>
           {stats.map((s) => (
             <div key={s.label} className="text-center">
@@ -178,7 +236,7 @@ const Index = () => {
       </section>
 
       {/* ============ Press ============ */}
-      <section className={`${PAD} ${SECTION} pb-0`}>
+      <section className={`${PAD} ${SECTION} pt-0`}>
         <div className="flex flex-col items-center gap-6 border-y border-border py-10">
           <span className="kicker">{t("home.press.kicker")}</span>
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 opacity-70">
@@ -191,37 +249,41 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ============ Bestsellers ============ */}
-      <section className={`${PAD} ${SECTION} pt-0`}>
-        <div className="flex items-end justify-between gap-6">
-          <SectionHeading
-            kicker={t("home.bestsellers.kicker")}
-            title={t("home.bestsellers.title")}
-            subtitle={t("home.bestsellers.subtitle")}
-            className="mb-0"
-          />
+      {/* ============ Shop by format ============ */}
+      <section className={`${PAD} ${SECTION}`}>
+        <SectionHeading
+          kicker={t("home.formats.kicker")}
+          title={t("home.formats.title")}
+          subtitle={t("home.formats.subtitle")}
+        />
+        <div className="grid gap-8 md:grid-cols-3">
+          {formats.map((f, i) => (
+            <Reveal key={f.name} delay={i * 0.08}>
+              <Link to="/collections/all" className="group block">
+                <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+                  <img
+                    src={f.image}
+                    alt={f.name}
+                    crossOrigin="anonymous"
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out-quart group-hover:scale-105"
+                  />
+                </div>
+                <div className="mt-5 flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="font-display text-2xl">{f.name}</h3>
+                    <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
+                      {f.desc}
+                    </p>
+                  </div>
+                  <span className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center border border-border transition duration-200 group-hover:bg-foreground group-hover:text-background">
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
+          ))}
         </div>
-        <Carousel className="mt-10">
-          <CarouselContent className="-ml-4">
-            {bestsellers.map((p) => (
-              <CarouselItem
-                key={p.slug}
-                className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
-              >
-                <ProductCard product={p} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
-            <span className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-              {t("home.bestsellers.slide")}
-            </span>
-            <div className="flex gap-2">
-              <CarouselPrevious className="static left-auto right-auto top-auto h-10 w-10 -translate-x-0 translate-y-0 rounded-none border border-border bg-card shadow-none hover:bg-foreground hover:text-background" />
-              <CarouselNext className="static left-auto right-auto top-auto h-10 w-10 -translate-x-0 translate-y-0 rounded-none border border-border bg-card shadow-none hover:bg-foreground hover:text-background" />
-            </div>
-          </div>
-        </Carousel>
       </section>
 
       {/* ============ Editorial ============ */}
@@ -279,8 +341,34 @@ const Index = () => {
         </Reveal>
       </section>
 
+      {/* ============ How it works ============ */}
+      <section className="bg-secondary/50 py-[clamp(4rem,8vw,8rem)]">
+        <div className={`${PAD}`}>
+          <SectionHeading
+            align="center"
+            kicker={t("home.how.kicker")}
+            title={t("home.how.title")}
+          />
+          <div className="grid gap-10 md:grid-cols-3">
+            {steps.map((s, i) => (
+              <Reveal key={s.title} delay={i * 0.1}>
+                <div className="text-center">
+                  <span className="font-display text-5xl text-accent/60">
+                    0{i + 1}
+                  </span>
+                  <h3 className="mt-4 font-display text-xl">{s.title}</h3>
+                  <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
+                    {s.text}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ============ Testimonials ============ */}
-      <section className={`${PAD} ${SECTION} pt-0`}>
+      <section className={`${PAD} ${SECTION}`}>
         <SectionHeading
           align="center"
           kicker={t("home.testimonials.kicker")}

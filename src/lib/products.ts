@@ -15,6 +15,28 @@ export const HERO_IMAGE = img("noewe-hero_6a5937ca");
 export const INTERIOR_BEDROOM = img("noewe-interior-bedroom_1796a426");
 export const INTERIOR_GALLERY = img("noewe-interior-gallery_9bb33d3f");
 
+/** Imagery for the "Shop by format" homepage tiles. */
+export const FORMAT_IMAGES = {
+  poster: img("noewe-amber-drift_45c6e41a"),
+  framed: img("noewe-quiet-geometry_86f71011"),
+  canvas: img("noewe-casa-arches_02a9b656"),
+};
+
+export type SizeUnit = "cm" | "in";
+
+/** Converts a metric dimension pair ("50 × 70") into the requested unit. */
+export const convertSize = (size: string, unit: SizeUnit): string => {
+  const nums = size.split("×").map((s) => parseFloat(s.trim()));
+  if (nums.length !== 2 || nums.some(Number.isNaN)) return size;
+  if (unit === "cm") return `${nums[0]} × ${nums[1]}`;
+  const toIn = (n: number) => Math.round((n / 2.54) * 10) / 10;
+  return `${toIn(nums[0])} × ${toIn(nums[1])}`;
+};
+
+/** Formats a dimension pair with its unit, e.g. "50 × 70 cm" / "19.7 × 27.6 in". */
+export const formatSize = (size: string, unit: SizeUnit): string =>
+  `${convertSize(size, unit)} ${unit}`;
+
 /** Shared gallery detail shots. */
 export const DETAIL_PAPER = img("noewe-detail-paper_809f2255");
 export const DETAIL_CANVAS = img("noewe-detail-canvas_df23b1a3");

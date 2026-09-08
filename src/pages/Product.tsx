@@ -9,6 +9,7 @@ import {
   Package,
   Plus,
   RotateCcw,
+  Ruler,
   ShieldCheck,
   ShoppingBag,
   Truck,
@@ -20,6 +21,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Carousel,
   CarouselContent,
@@ -33,6 +42,9 @@ import {
   getCollectionProducts,
   products,
   formatPrice,
+  convertSize,
+  formatSize,
+  type SizeUnit,
 } from "@/lib/products";
 import { FORMATS, FORMAT_LABELS, type Format } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
@@ -62,6 +74,7 @@ const Product = () => {
   const [frame, setFrame] = useState<string | null>("white-oak");
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [unit, setUnit] = useState<SizeUnit>("cm");
 
   const related = useMemo(() => {
     if (!product) return [];
@@ -103,6 +116,23 @@ const Product = () => {
   const savePct = onSale
     ? Math.round((1 - unitPrice / comparePrice) * 100)
     : 0;
+
+  const idealFor = (v: string): string => {
+    switch (v) {
+      case "30 × 40":
+        return t("sizeGuide.ideal.3040");
+      case "40 × 60":
+        return t("sizeGuide.ideal.4060");
+      case "50 × 70":
+        return t("sizeGuide.ideal.5070");
+      case "60 × 90":
+        return t("sizeGuide.ideal.6090");
+      case "70 × 100":
+        return t("sizeGuide.ideal.70100");
+      default:
+        return "—";
+    }
+  };
 
   const selectFormat = (next: Format) => {
     setFormat(next);
@@ -152,33 +182,11 @@ const Product = () => {
           <span className="text-foreground">{product.name}</span>
         </nav>
 
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          {/* Gallery */}
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+          {/* Gallery: thumbnail rail on the left of the main image */}
           <div className="lg:sticky lg:top-32 lg:self-start">
-            <div className="relative overflow-hidden bg-muted">
-              <img
-                key={activeImage}
-                src={gallery[activeImage]}
-                alt={product.alt}
-                crossOrigin="anonymous"
-                className="aspect-[4/5] w-full animate-in object-cover fade-in duration-500"
-              />
-              <div className="absolute left-4 top-4 flex flex-col gap-1.5">
-                {onSale && (
-                  <span className="bg-destructive px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-destructive-foreground">
-                    {t("product.sale")}
-                  </span>
-                )}
-                {product.bestseller && (
-                  <span className="bg-background/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground backdrop-blur-sm">
-                    {t("product.bestseller")}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {gallery.length > 1 && (
-              <div className="mt-3 grid grid-cols-3 gap-3">
+            <div className="flex gap-3">
+              <div className="flex shrink-0 flex-col gap-3">
                 {gallery.map((src, i) => (
                   <button
                     key={`${src}-${i}`}
@@ -189,7 +197,7 @@ const Product = () => {
                       count: gallery.length,
                     })}
                     className={cn(
-                      "relative aspect-square overflow-hidden bg-muted ring-1 transition",
+                      "relative aspect-[3/4] w-14 shrink-0 overflow-hidden bg-muted ring-1 transition md:w-20",
                       activeImage === i
                         ? "ring-foreground"
                         : "opacity-70 ring-transparent hover:opacity-100",
@@ -204,7 +212,29 @@ const Product = () => {
                   </button>
                 ))}
               </div>
-            )}
+
+              <div className="relative flex-1 overflow-hidden bg-muted">
+                <img
+                  key={activeImage}
+                  src={gallery[activeImage]}
+                  alt={product.alt}
+                  crossOrigin="anonymous"
+                  className="aspect-[4/5] w-full animate-in object-cover fade-in duration-500"
+                />
+                <div className="absolute left-4 top-4 flex flex-col gap-1.5">
+                  {onSale && (
+                    <span className="bg-destructive px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-destructive-foreground">
+                      {t("product.sale")}
+                    </span>
+                  )}
+                  {product.bestseller && (
+                    <span className="bg-background/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground backdrop-blur-sm">
+                      {t("product.bestseller")}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Info */}
@@ -295,9 +325,95 @@ const Product = () => {
               </div>
             </div>
 
-            {/* Size */}
+            {/* Size + unit switcher + size guide */}
             <div className="mt-7">
-              <span className="kicker mb-3 block">{t("product.size")}</span>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                <span className="kicker">{t("product.size")}</span>
+                <div className="flex items-center gap-3">
+                  <div
+                    role="group"
+                    aria-label={t("product.unitLabel")}
+                    className="flex border border-border text-[11px] font-semibold uppercase tracking-[0.1em]"
+                  >
+                    {(["cm", "in"] as const).map((u) => (
+                      <button
+                        key={u}
+                        type="button"
+                        onClick={() => setUnit(u)}
+                        className={cn(
+                          "px-2.5 py-1 transition",
+                          unit === u
+                            ? "bg-foreground text-background"
+                            : "bg-card text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        {u}
+                      </button>
+                    ))}
+                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button
+                        type="button"
+                        className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground transition hover:text-foreground"
+                      >
+                        <Ruler className="h-3.5 w-3.5" />
+                        {t("product.sizeGuide")}
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="max-h-[85vh] overflow-y-auto rounded-none border-border bg-card sm:max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle className="font-display text-2xl font-normal">
+                          {t("sizeGuide.title")}
+                        </DialogTitle>
+                        <DialogDescription>
+                          {t("sizeGuide.subtitle")}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-border text-left font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                              <th className="py-3 pr-4 font-medium">
+                                {t("sizeGuide.format")}
+                              </th>
+                              <th className="py-3 pr-4 font-medium">
+                                {t("sizeGuide.unitCm")}
+                              </th>
+                              <th className="py-3 pr-4 font-medium">
+                                {t("sizeGuide.unitIn")}
+                              </th>
+                              <th className="py-3 font-medium">
+                                {t("sizeGuide.ideal")}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {FORMATS.map((f) =>
+                              product.formats[f].map((v) => (
+                                <tr
+                                  key={`${f}-${v.size}`}
+                                  className="border-b border-border/60 last:border-b-0"
+                                >
+                                  <td className="py-3 pr-4">{FORMAT_LABELS[f]}</td>
+                                  <td className="py-3 pr-4">{v.size} cm</td>
+                                  <td className="py-3 pr-4">
+                                    {convertSize(v.size, "in")} in
+                                  </td>
+                                  <td className="py-3 text-muted-foreground">
+                                    {idealFor(v.size)}
+                                  </td>
+                                </tr>
+                              )),
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+
               <div className="flex flex-wrap gap-2">
                 {sizes.map((v) => (
                   <button
@@ -305,13 +421,15 @@ const Product = () => {
                     type="button"
                     onClick={() => setSize(v.size)}
                     className={cn(
-                      "min-w-[92px] border px-4 py-3 text-left transition",
+                      "min-w-[104px] border px-4 py-3 text-left transition",
                       size === v.size
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-card text-foreground hover:border-foreground/40",
                     )}
                   >
-                    <span className="block text-sm">{v.size}</span>
+                    <span className="block text-sm">
+                      {formatSize(v.size, unit)}
+                    </span>
                     {v.compareAtPrice != null ? (
                       <>
                         <span className="mt-0.5 block text-[11px] text-destructive">
@@ -342,7 +460,8 @@ const Product = () => {
                 ))}
               </div>
               <p className="mt-2 text-xs text-muted-foreground">
-                {t("product.dims", { dims: currentVariant.dims })}
+                {formatSize(currentVariant.size, unit)} ·{" "}
+                {t("product.dimsHint")}
               </p>
             </div>
 
@@ -370,16 +489,38 @@ const Product = () => {
                       <span className="mt-2 block text-xs leading-tight">
                         {fo.label}
                       </span>
-                      <span
-                        className={cn(
-                          "mt-0.5 block text-[11px]",
-                          frame === fo.id ? "opacity-75" : "text-muted-foreground",
-                        )}
-                      >
-                        {fo.upcharge === 0
-                          ? t("product.included")
-                          : `+${formatPrice(fo.upcharge)}`}
-                      </span>
+                      {format === "framed" &&
+                      currentVariant.compareAtPrice != null ? (
+                        frame === fo.id ? (
+                          <span className="mt-0.5 block text-[11px] text-background/80">
+                            {formatPrice(currentVariant.price + fo.upcharge)}
+                          </span>
+                        ) : (
+                          <span className="mt-0.5 block text-[11px]">
+                            <span className="text-destructive">
+                              {formatPrice(currentVariant.price + fo.upcharge)}
+                            </span>{" "}
+                            <span className="text-muted-foreground line-through">
+                              {formatPrice(
+                                currentVariant.compareAtPrice + fo.upcharge,
+                              )}
+                            </span>
+                          </span>
+                        )
+                      ) : (
+                        <span
+                          className={cn(
+                            "mt-0.5 block text-[11px]",
+                            frame === fo.id
+                              ? "text-background/80"
+                              : "text-muted-foreground",
+                          )}
+                        >
+                          {fo.upcharge === 0
+                            ? t("product.included")
+                            : `+${formatPrice(fo.upcharge)}`}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
