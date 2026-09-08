@@ -64,6 +64,23 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			fontFamily: {
+				sans: ["Instrument Sans", "system-ui", "sans-serif"],
+				display: ["Fraunces", "Georgia", "serif"],
+				mono: ["DM Mono", "monospace"],
+			},
+			boxShadow: {
+				card: "var(--shadow-card)",
+				hover: "var(--shadow-hover)",
+				pop: "var(--shadow-pop)",
+			},
+			backgroundImage: {
+				"gradient-hero": "var(--gradient-hero)",
+				"gradient-overlay": "var(--gradient-overlay)",
+			},
+			transitionTimingFunction: {
+				"out-quart": "cubic-bezier(0.22, 1, 0.36, 1)",
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
