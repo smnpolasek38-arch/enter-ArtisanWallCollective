@@ -2,11 +2,9 @@ import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
-  BadgeCheck,
   Check,
   ChevronRight,
   Minus,
-  Package,
   Plus,
   RotateCcw,
   Ruler,
@@ -182,7 +180,7 @@ const Product = () => {
           <span className="text-foreground">{product.name}</span>
         </nav>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-20">
           {/* Gallery: thumbnail rail on the left of the main image */}
           <div className="lg:sticky lg:top-32 lg:self-start">
             <div className="flex gap-3">
@@ -197,7 +195,7 @@ const Product = () => {
                       count: gallery.length,
                     })}
                     className={cn(
-                      "relative aspect-[3/4] w-14 shrink-0 overflow-hidden bg-muted ring-1 transition md:w-20",
+                      "relative aspect-[3/4] w-20 shrink-0 overflow-hidden bg-muted ring-1 transition md:w-28",
                       activeImage === i
                         ? "ring-foreground"
                         : "opacity-70 ring-transparent hover:opacity-100",
@@ -243,15 +241,15 @@ const Product = () => {
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                 {product.artist}
               </p>
-              <h1 className="display-s mt-2">{product.name}</h1>
+              <h1 className="headline-l mt-2">{product.name}</h1>
 
-              <div className="mt-4 flex items-center gap-2">
+              <p className="mt-4 flex items-center gap-2">
                 <RatingStars rating={product.rating} />
                 <span className="text-sm text-muted-foreground">
                   {product.rating} ·{" "}
                   {t("product.reviews.count", { count: product.reviewCount })}
                 </span>
-              </div>
+              </p>
 
               {/* Price */}
               <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -280,18 +278,6 @@ const Product = () => {
                   {t("product.frameIncluded", { frame: selectedFrame.label })}
                 </p>
               ) : null}
-
-              {/* Edition / shipping line */}
-              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1.5">
-                  <BadgeCheck className="h-3.5 w-3.5 text-accent" />
-                  {t("product.edition")}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Package className="h-3.5 w-3.5 text-accent" />
-                  {t("product.shipsIn")}
-                </span>
-              </div>
 
               <p className="mt-5 max-w-lg leading-relaxed text-muted-foreground">
                 {product.description}
