@@ -66,7 +66,7 @@ export default {
 			},
 			fontFamily: {
 				sans: ["Instrument Sans", "system-ui", "sans-serif"],
-				display: ["Fraunces", "Georgia", "serif"],
+				display: ["Cormorant Garamond", "Georgia", "serif"],
 				mono: ["DM Mono", "monospace"],
 			},
 			boxShadow: {
