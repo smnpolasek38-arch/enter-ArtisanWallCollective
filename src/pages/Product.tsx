@@ -170,9 +170,9 @@ const Product = () => {
 
   return (
     <div>
-      <section className={`${PAD} py-10 lg:py-16`}>
+      <section className={`${PAD} pb-10 pt-4 lg:pb-16 lg:pt-6`}>
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-1.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+        <nav className="mb-5 flex items-center gap-1.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">
           <Link to="/" className="transition hover:text-foreground">
             Noewe
           </Link>
