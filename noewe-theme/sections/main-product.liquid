@@ -1,5 +1,5 @@
 {%- comment -%} Main product section {%- endcomment -%}
-{%- if product == nil %}{% return %}{% endif -%}
+{%- unless product == nil -%}
 
 {%- assign on_sale = false -%}
 {%- if product.compare_at_price > product.price -%}
@@ -182,6 +182,8 @@
     </div>
   </div>
 </section>
+
+{%- endunless -%}
 
 {% schema %}
 {

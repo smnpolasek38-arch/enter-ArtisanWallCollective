@@ -2,7 +2,7 @@
   Renders product price with sale compare-at. Usage: {% render 'price', product: product %}
   Available for a specific variant via: {% render 'price', product: product, use_variant: true %}
 {%- endcomment -%}
-{%- if product == nil -%}{%- return -%}{%- endif -%}
+{%- unless product == nil -%}
 
 {%- assign target = product -%}
 {%- if use_variant and product.selected_or_first_available_variant -%}
@@ -21,3 +21,5 @@
     <span class="price__regular">{{ target.price | money }}</span>
   {%- endif -%}
 </div>
+
+{%- endunless -%}
