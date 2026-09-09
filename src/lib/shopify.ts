@@ -10,7 +10,7 @@ import type { Collection, Product, ShopifyVariant } from "./types";
  * frontend code, so they are safe to keep in the app bundle.
  */
 export const SHOPIFY_CONFIG = {
-  storeDomain: "",
+  storeDomain: "7yqn60-s2.myshopify.com",
   storefrontAccessToken: "",
   apiVersion: "2026-07",
 };
