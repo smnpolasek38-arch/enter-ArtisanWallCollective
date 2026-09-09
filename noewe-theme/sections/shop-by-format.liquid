@@ -11,9 +11,10 @@
       <a href="{{ block.settings.link | default: routes.all_products_collection_url }}" class="format-tile" data-reveal data-reveal-delay="{{ forloop.index0 | times: 80 }}">
         <div class="format-tile__media">
           {%- if block.settings.image != blank -%}
-            {{ block.settings.image | image_url: width: 1000 | image_tag: class: 'format-tile__img', alt: block.settings.name | escape, loading: 'lazy' }}
+            {%- assign format_alt = block.settings.name | escape -%}
+            {{ block.settings.image | image_url: width: 1000 | image_tag: class: 'format-tile__img', alt: format_alt, loading: 'lazy' }}
           {%- elsif block.settings.default_image != blank -%}
-            <img class="format-tile__img" src="{{ block.settings.default_image }}" alt="{{ block.settings.name | escape }}" loading="lazy">
+            <img class="format-tile__img" src="{{ block.settings.default_image | asset_url }}" alt="{{ block.settings.name | escape }}" width="1728" height="2304" loading="lazy">
           {%- endif -%}
         </div>
         <div class="format-tile__content">

@@ -1,9 +1,10 @@
 {%- comment -%} Full-width interior image band {%- endcomment -%}
 <div class="image-band section page-width" style="padding-block:0">
   {%- if section.settings.image != blank -%}
-    {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'image-band__img', alt: section.settings.image.alt | escape, loading: 'lazy' }}
+    {%- assign band_alt = section.settings.image.alt | escape -%}
+    {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'image-band__img', alt: band_alt, loading: 'lazy' }}
   {%- else -%}
-    <img class="image-band__img" src="{{ 'noewe-interior-gallery.png' | asset_url }}" alt="" loading="lazy">
+    <img class="image-band__img" src="{{ 'noewe-interior-gallery.png' | asset_url }}" alt="" width="2304" height="1728" loading="lazy">
   {%- endif -%}
 </div>
 

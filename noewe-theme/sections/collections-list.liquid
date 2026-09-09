@@ -10,6 +10,7 @@
     {%- for block in section.blocks -%}
       {%- assign c = block.settings.collection -%}
       {%- if c == nil %}{% continue %}{% endif -%}
+      {%- assign tile_alt = c.title | escape -%}
       {%- capture default_image -%}
         {%- case c.handle -%}
           {%- when 'abstract' -%}{{ 'noewe-amber-drift.png' | asset_url }}
@@ -22,13 +23,13 @@
       <a href="{{ c.url }}" class="collection-tile" data-reveal data-reveal-delay="{{ forloop.index0 | times: 80 }}">
         <div class="collection-tile__media">
           {%- if block.settings.image != blank -%}
-            {{ block.settings.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: c.title | escape, loading: 'lazy' }}
+            {{ block.settings.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: tile_alt, loading: 'lazy' }}
           {%- elsif c.image -%}
-            {{ c.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: c.title | escape, loading: 'lazy' }}
+            {{ c.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: tile_alt, loading: 'lazy' }}
           {%- elsif c.products.first.featured_image -%}
-            {{ c.products.first.featured_image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: c.title | escape, loading: 'lazy' }}
+            {{ c.products.first.featured_image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: tile_alt, loading: 'lazy' }}
           {%- else -%}
-            <img class="collection-tile__img" src="{{ default_image }}" alt="{{ c.title | escape }}" loading="lazy">
+            <img class="collection-tile__img" src="{{ default_image }}" alt="{{ c.title | escape }}" width="1728" height="2304" loading="lazy">
           {%- endif -%}
         </div>
         <div class="collection-tile__overlay"></div>

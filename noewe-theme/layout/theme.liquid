@@ -68,7 +68,7 @@
     data-cart-empty-text="{{ 'cart.empty' | t | escape }}"
     data-collections-url="{{ routes.all_products_collection_url }}"
     data-cart-browse-text="{{ 'cart.empty_text' | t | escape }}"
-    data-cart-progress-text="{{ 'layout.cart.free_shipping_progress' | t: amount: '{{ amount }}' }}"
+    data-cart-progress-text="{{ 'layout.cart.free_shipping_progress' | t: amount: '__AMOUNT__' }}"
     data-cart-progress-reached="{{ 'layout.cart.free_shipping_reached' | t }}"
     data-add-to-cart-text="{{ 'products.product.add_to_cart' | t }}"
     data-sold-out-text="{{ 'products.product.sold_out' | t }}"

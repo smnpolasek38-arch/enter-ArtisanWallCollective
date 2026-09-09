@@ -139,7 +139,7 @@
                 <p style="font-size:14px;margin-bottom:0.75rem">{{ address | format_address }}</p>
                 <div class="form-footer" style="margin-top:0">
                   <a href="#" onclick="Shopify.CustomerAddress.toggleForm({{ address.id }});return false;" style="font-size:13px">{{ 'customer.edit' | t }}</a>
-                  <form method="post" action="/account/addresses/{{ address.id }}" style="display:inline">
+                   <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" style="display:inline">
                     <input type="hidden" name="_method" value="delete">
                     <button type="submit" style="font-size:13px;color:var(--color-destructive)">{{ 'customer.delete' | t }}</button>
                   </form>

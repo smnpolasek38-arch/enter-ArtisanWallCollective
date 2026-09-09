@@ -8,11 +8,12 @@
 
   <div class="testimonials-grid">
     {%- for block in section.blocks -%}
+      {%- assign rating = block.settings.rating | default: 5 -%}
       <figure class="testimonial" data-reveal data-reveal-delay="{{ forloop.index0 | times: 80 }}">
         <span class="testimonial__quote-icon">{% render 'icon', icon: 'quote' %}</span>
         <blockquote class="testimonial__quote">“{{ block.settings.quote }}”</blockquote>
         <figcaption class="testimonial__foot">
-          {% render 'rating-stars', rating: block.settings.rating | default: 5 %}
+          {% render 'rating-stars', rating: rating %}
           <p class="testimonial__author">{{ block.settings.author }}</p>
           <p class="testimonial__verified">{{ 'sections.testimonials.verified' | t }}</p>
         </figcaption>

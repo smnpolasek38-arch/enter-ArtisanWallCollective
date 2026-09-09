@@ -13,49 +13,62 @@
     <button type="submit" class="btn btn--primary btn--xl">{% render 'icon', icon: 'search' %}</button>
   </form>
 
-  {%- if search.performed -%}
-    {%- if search.results_count == 0 -%}
-      <p style="margin-top:2.5rem;color:var(--color-muted-foreground)">
-        {{ 'search.no_results' | t: terms: search.terms }}
-      </p>
-    {%- else -%}
-      <p class="kicker" style="margin-top:2.5rem">
-        {{ 'search.results' | t: count: search.results_count }}
-      </p>
-      <div class="search-results">
-        {%- for item in search.results -%}
-          {%- if item.object_type == 'product' -%}
-            {% render 'product-card', product: item %}
-          {%- else -%}
-            <a href="{{ item.url }}" class="article-card">
-              {%- if item.image -%}
-                {{ item.image | image_url: width: 600 | image_tag: class: 'article-card__img', loading: 'lazy', alt: item.image.alt | escape }}
-              {%- endif -%}
-              <h3 class="article-card__title">{{ item.title }}</h3>
-              <p class="article-card__excerpt">{{ item.content | strip_html | truncate: 120 }}</p>
-            </a>
-          {%- endif -%}
-        {%- endfor -%}
-      </div>
-
-      {%- if paginate.pages > 1 -%}
-        <nav class="pagination" role="navigation" aria-label="Pagination">
-          {%- for part in paginate.parts -%}
-            {%- if part.is_link -%}
-              <a class="pagination__item" href="{{ part.url }}">{{ part.title }}</a>
+  {%- paginate search.results by section.settings.results_per_page -%}
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <p style="margin-top:2.5rem;color:var(--color-muted-foreground)">
+          {{ 'search.no_results' | t: terms: search.terms }}
+        </p>
+      {%- else -%}
+        <p class="kicker" style="margin-top:2.5rem">
+          {{ 'search.results' | t: count: search.results_count }}
+        </p>
+        <div class="search-results">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'product-card', product: item %}
             {%- else -%}
-              <span class="pagination__item{% if part.title == paginate.current_page %} is-active{% endif %}" {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
+              <a href="{{ item.url }}" class="article-card">
+                {%- if item.image -%}
+                  {%- assign item_alt = item.image.alt | escape -%}
+                  {{ item.image | image_url: width: 600 | image_tag: class: 'article-card__img', loading: 'lazy', alt: item_alt }}
+                {%- endif -%}
+                <h3 class="article-card__title">{{ item.title }}</h3>
+                <p class="article-card__excerpt">{{ item.content | strip_html | truncate: 120 }}</p>
+              </a>
             {%- endif -%}
           {%- endfor -%}
-        </nav>
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" role="navigation" aria-label="Pagination">
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a class="pagination__item" href="{{ part.url }}">{{ part.title }}</a>
+              {%- else -%}
+                <span class="pagination__item{% if part.title == paginate.current_page %} is-active{% endif %}" {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+          </nav>
+        {%- endif -%}
       {%- endif -%}
     {%- endif -%}
-  {%- endif -%}
+  {%- endpaginate -%}
 </section>
 
 {% schema %}
 {
   "name": "Search",
-  "settings": []
+  "settings": [
+    {
+      "type": "range",
+      "id": "results_per_page",
+      "label": "Results per page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    }
+  ]
 }
 {% endschema %}

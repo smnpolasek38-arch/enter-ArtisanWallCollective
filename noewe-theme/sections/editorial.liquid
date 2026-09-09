@@ -4,9 +4,10 @@
     <div data-reveal>
       <div class="editorial__media">
         {%- if section.settings.image != blank -%}
-          {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'editorial__img', alt: section.settings.image.alt | escape, loading: 'lazy' }}
+          {%- assign editorial_alt = section.settings.image.alt | escape -%}
+          {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'editorial__img', alt: editorial_alt, loading: 'lazy' }}
         {%- else -%}
-          <img class="editorial__img" src="{{ 'noewe-interior-bedroom.png' | asset_url }}" alt="" loading="lazy">
+          <img class="editorial__img" src="{{ 'noewe-interior-bedroom.png' | asset_url }}" alt="" width="2304" height="1728" loading="lazy">
         {%- endif -%}
       </div>
     </div>

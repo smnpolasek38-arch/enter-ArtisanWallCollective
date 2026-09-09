@@ -1,7 +1,8 @@
 {%- comment -%} Hero {%- endcomment -%}
 <section class="hero">
   {%- if section.settings.image != blank -%}
-    {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'hero__media', alt: section.settings.image.alt | escape, loading: 'eager', fetchpriority: 'high' }}
+    {%- assign hero_alt = section.settings.image.alt | escape -%}
+    {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'hero__media', alt: hero_alt, loading: 'eager', fetchpriority: 'high' }}
   {%- else -%}
     <img
       class="hero__media"

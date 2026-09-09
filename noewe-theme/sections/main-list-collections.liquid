@@ -8,12 +8,13 @@
   <div class="collection-tiles">
     {%- for collection in collections -%}
       {%- if collection.products_count == 0 and section.settings.hide_empty %}{% continue %}{% endif -%}
+      {%- assign tile_alt = collection.title | escape -%}
       <a href="{{ collection.url }}" class="collection-tile">
         <div class="collection-tile__media">
           {%- if collection.image -%}
-            {{ collection.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: collection.title | escape, loading: 'lazy' }}
+            {{ collection.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: tile_alt, loading: 'lazy' }}
           {%- elsif collection.products.first.featured_image -%}
-            {{ collection.products.first.featured_image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: collection.title | escape, loading: 'lazy' }}
+            {{ collection.products.first.featured_image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: tile_alt, loading: 'lazy' }}
           {%- endif -%}
         </div>
         <div class="collection-tile__overlay"></div>

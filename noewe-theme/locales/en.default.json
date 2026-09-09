@@ -237,6 +237,7 @@
   "cart": {
     "title": "Your cart",
     "summary": "Order summary",
+    "total": "Total",
     "checkout": "Checkout",
     "subtotal": "Subtotal",
     "shipping_at_checkout": "Taxes and shipping calculated at checkout.",

@@ -81,8 +81,9 @@
           {%- endif -%}
         </span>
         {%- if on_sale -%}
+          {%- assign save_amount = product.compare_at_price_min | minus: product.price_min | money -%}
           <span class="price__save" data-save>
-            {{ 'products.product.save' | t: amount: (product.compare_at_price_min | minus: product.price_min | money) }}
+            {{ 'products.product.save' | t: amount: save_amount }}
           </span>
         {%- endif -%}
       </div>
@@ -104,12 +105,6 @@
               </span>
               <div class="option-group__values">
                 {%- for value in option.values -%}
-                  {%- assign value_soldout = false -%}
-                  {%- if product.available and product.variants.size == 1 -%}
-                    {%- unless product.selected_or_first_available_variant.available -%}
-                      {%- assign value_soldout = true -%}
-                    {%- endunless -%}
-                  {%- endif -%}
                   <button
                     type="button"
                     class="option-btn{% if option.selected_value == value %} is-active{% endif %}"

@@ -312,7 +312,7 @@
       bar.style.width = pct + '%';
       text.textContent =
         remaining > 0
-          ? document.body.dataset.cartProgressText.replace('{{ amount }}', money(remaining * 100))
+          ? document.body.dataset.cartProgressText.replace('__AMOUNT__', money(remaining * 100))
           : document.body.dataset.cartProgressReached;
     },
 
