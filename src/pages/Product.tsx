@@ -36,16 +36,9 @@ import {
 import { ProductCard } from "@/components/store/ProductCard";
 import { RatingStars } from "@/components/store/RatingStars";
 import { Reveal } from "@/components/store/Reveal";
-import {
-  getCollection,
-  getCollectionProducts,
-  products,
-  formatPrice,
-  convertSize,
-  formatSize,
-  type SizeUnit,
-} from "@/lib/products";
-import { FORMATS, FORMAT_LABELS, type Format } from "@/lib/types";
+import { useCatalog } from "@/lib/catalog";
+import { formatPrice, convertSize, formatSize } from "@/lib/products";
+import { FORMATS, FORMAT_LABELS, type Format, type Product } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
 
@@ -61,19 +54,22 @@ const FRAME_SWATCH: Record<string, string> = {
 /** Approximate star distribution (5→1★) derived for the review summary. */
 const REVIEW_BARS = [88, 8, 2, 1, 1];
 
-const Product = () => {
+interface GalleryProps {
+  images: string[];
+  alt: string;
+  saleLabel?: string;
+  bestsellerLabel?: string;
+}
+
+/** Responsive gallery: swipeable slider on mobile, thumbnail rail + main image on desktop. */
+function ProductGallery({
+  images,
+  alt,
+  saleLabel,
+  bestsellerLabel,
+}: GalleryProps) {
   const { t } = useTranslation();
-  const { slug = "" } = useParams<{ slug: string }>();
-  const { addItem } = useCart();
-
-  const product = useMemo(() => products.find((p) => p.slug === slug), [slug]);
-
-  const [format, setFormat] = useState<Format>("poster");
-  const [size, setSize] = useState<string>("50 × 70");
-  const [frame, setFrame] = useState<string | null>("white-oak");
-  const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
-  const [unit, setUnit] = useState<SizeUnit>("cm");
   const [galleryApi, setGalleryApi] = useState<CarouselApi | null>(null);
 
   useEffect(() => {
@@ -85,21 +81,431 @@ const Product = () => {
     };
   }, [galleryApi]);
 
+  const gallery = images.length ? images : [];
+  if (gallery.length === 0) return null;
+
+  const badges = (saleLabel || bestsellerLabel) && (
+    <div className="absolute left-4 top-4 flex flex-col gap-1.5">
+      {saleLabel ? (
+        <span className="bg-destructive px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-destructive-foreground">
+          {saleLabel}
+        </span>
+      ) : null}
+      {bestsellerLabel ? (
+        <span className="bg-background/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground backdrop-blur-sm">
+          {bestsellerLabel}
+        </span>
+      ) : null}
+    </div>
+  );
+
+  return (
+    <div className="lg:sticky lg:top-32 lg:self-start">
+      {/* Mobile: swipe slider */}
+      <div className="lg:hidden">
+        <Carousel setApi={setGalleryApi}>
+          <CarouselContent className="ml-0">
+            {gallery.map((src, i) => (
+              <CarouselItem key={`${src}-${i}`} className="pl-0">
+                <div className="relative overflow-hidden bg-muted">
+                  <img
+                    src={src}
+                    alt={alt}
+                    crossOrigin="anonymous"
+                    className="aspect-[4/5] w-full object-cover"
+                  />
+                  {badges}
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="mt-3 flex justify-center gap-1.5">
+            {gallery.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => galleryApi?.scrollTo(i)}
+                aria-label={t("product.imageThumb", {
+                  n: i + 1,
+                  count: gallery.length,
+                })}
+                className={cn(
+                  "h-1.5 rounded-full transition-all duration-300",
+                  activeImage === i ? "w-6 bg-foreground" : "w-1.5 bg-border",
+                )}
+              />
+            ))}
+          </div>
+        </Carousel>
+      </div>
+
+      {/* Desktop: thumbnail rail + main image */}
+      <div className="hidden lg:block">
+        <div className="flex gap-3">
+          <div className="flex shrink-0 flex-col gap-3">
+            {gallery.map((src, i) => (
+              <button
+                key={`${src}-${i}`}
+                type="button"
+                onClick={() => setActiveImage(i)}
+                aria-label={t("product.imageThumb", {
+                  n: i + 1,
+                  count: gallery.length,
+                })}
+                className={cn(
+                  "relative aspect-[3/4] w-24 shrink-0 overflow-hidden bg-muted ring-1 transition md:w-32",
+                  activeImage === i
+                    ? "ring-foreground"
+                    : "opacity-70 ring-transparent hover:opacity-100",
+                )}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  crossOrigin="anonymous"
+                  className="h-full w-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+          <div className="relative flex-1 overflow-hidden bg-muted">
+            <img
+              key={activeImage}
+              src={gallery[activeImage]}
+              alt={alt}
+              crossOrigin="anonymous"
+              className="aspect-[4/5] w-full object-cover"
+            />
+            {badges}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ================================================================== */
+/* Shopify-sourced product view                                        */
+/* ================================================================== */
+
+function ShopifyProductView({ product }: { product: Product }) {
+  const { t } = useTranslation();
+  const { addVariant } = useCart();
+  const { products: catalogProducts, collections: catalogCollections } =
+    useCatalog();
+
+  const variants = product.shopifyVariants ?? [];
+  const [variantId, setVariantId] = useState<string>(
+    () => variants.find((v) => v.availableForSale)?.id ?? variants[0]?.id ?? "",
+  );
+  const [qty, setQty] = useState(1);
+
+  const variant = variants.find((v) => v.id === variantId) ?? variants[0];
+  const unitPrice = variant?.price ?? 0;
+  const onSale =
+    variant != null &&
+    variant.compareAtPrice != null &&
+    variant.compareAtPrice > variant.price;
+  const comparePrice = onSale && variant?.compareAtPrice ? variant.compareAtPrice : unitPrice;
+  const saveAmount = Math.max(0, comparePrice - unitPrice);
+  const savePct = onSale ? Math.round((1 - unitPrice / comparePrice) * 100) : 0;
+
+  const collection = catalogCollections.find(
+    (c) => c.slug === product.collection,
+  );
+
+  const related = useMemo(() => {
+    const same = catalogProducts.filter(
+      (p) => p.collection === product.collection && p.slug !== product.slug,
+    );
+    if (same.length >= 4) return same.slice(0, 4);
+    const fill = catalogProducts.filter(
+      (p) => p.slug !== product.slug && !same.some((s) => s.slug === p.slug),
+    );
+    return [...same, ...fill].slice(0, 4);
+  }, [product, catalogProducts]);
+
+  const uspList = [
+    t("product.usp1"),
+    t("product.usp2"),
+    t("product.usp3"),
+    t("product.usp4"),
+  ];
+
+  const handleAddToCart = () => {
+    if (variant) addVariant(product, variant, qty);
+  };
+
+  return (
+    <section className={`${PAD} pb-10 pt-4 lg:pb-16 lg:pt-6`}>
+      {/* Breadcrumb */}
+      <nav className="mb-5 flex items-center gap-1.5 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+        <Link to="/" className="transition hover:text-foreground">
+          Noewe
+        </Link>
+        <ChevronRight className="h-3.5 w-3.5" />
+        <Link
+          to={collection ? `/collections/${collection.slug}` : "/collections/all"}
+          className="transition hover:text-foreground"
+        >
+          {collection ? collection.name : t("collection.all")}
+        </Link>
+        <ChevronRight className="h-3.5 w-3.5" />
+        <span className="text-foreground">{product.name}</span>
+      </nav>
+
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+        <ProductGallery
+          images={product.images}
+          alt={product.alt}
+          saleLabel={onSale ? t("product.sale") : undefined}
+          bestsellerLabel={product.bestseller ? t("product.bestseller") : undefined}
+        />
+
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            {product.artist}
+          </p>
+          <h1 className="headline-l mt-2">{product.name}</h1>
+
+          {/* Price */}
+          <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <p
+              className={cn(
+                "font-display text-3xl",
+                onSale && "text-destructive",
+              )}
+            >
+              {formatPrice(unitPrice)}
+            </p>
+            {onSale && (
+              <>
+                <p className="text-lg text-muted-foreground line-through">
+                  {formatPrice(comparePrice)}
+                </p>
+                <span className="bg-destructive/10 px-2 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-destructive">
+                  {t("product.save", { amount: formatPrice(saveAmount) })} ·{" "}
+                  {savePct}% {t("product.off")}
+                </span>
+              </>
+            )}
+          </div>
+
+          {/* Trust strip */}
+          <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-border py-4">
+            <span className="flex items-center gap-1.5 text-xs font-medium">
+              <Truck className="h-4 w-4 text-accent" />
+              {t("product.trust.shipping")}
+            </span>
+            <span className="flex items-center gap-1.5 text-xs font-medium">
+              <Clock className="h-4 w-4 text-accent" />
+              {t("product.trust.ship24h")}
+            </span>
+            <span className="flex items-center gap-1.5 text-xs font-medium">
+              <RotateCcw className="h-4 w-4 text-accent" />
+              {t("product.trust.returns")}
+            </span>
+          </div>
+
+          <p className="mt-5 max-w-lg leading-relaxed text-muted-foreground">
+            {product.description}
+          </p>
+
+          {/* Variant selector */}
+          <div className="mt-8">
+            <span className="kicker mb-3 block">{t("shopify.variant")}</span>
+            <div className="flex flex-col gap-2">
+              {variants.map((v) => (
+                <button
+                  key={v.id}
+                  type="button"
+                  onClick={() => setVariantId(v.id)}
+                  disabled={!v.availableForSale}
+                  className={cn(
+                    "flex items-center justify-between gap-4 border px-4 py-3 text-left transition disabled:cursor-not-allowed disabled:opacity-45",
+                    variantId === v.id
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border bg-card hover:border-foreground/40",
+                  )}
+                >
+                  <span className="text-sm">{v.title}</span>
+                  <span className="flex items-center gap-2 whitespace-nowrap text-sm">
+                    {v.compareAtPrice != null && v.compareAtPrice > v.price ? (
+                      <span
+                        className={cn(
+                          "text-xs line-through",
+                          variantId === v.id
+                            ? "text-background/60"
+                            : "text-muted-foreground",
+                        )}
+                      >
+                        {formatPrice(v.compareAtPrice)}
+                      </span>
+                    ) : null}
+                    <span
+                      className={cn(
+                        v.compareAtPrice != null &&
+                          v.compareAtPrice > v.price &&
+                          variantId !== v.id &&
+                          "text-destructive",
+                      )}
+                    >
+                      {formatPrice(v.price)}
+                    </span>
+                  </span>
+                </button>
+              ))}
+            </div>
+            {variants.length > 0 && !variant?.availableForSale && (
+              <p className="mt-2 text-xs text-destructive">
+                {t("shopify.soldOut")}
+              </p>
+            )}
+          </div>
+
+          {/* Qty + CTA */}
+          <div className="mt-8 flex gap-3">
+            <div className="flex shrink-0 items-center border border-border">
+              <button
+                type="button"
+                onClick={() => setQty(Math.max(1, qty - 1))}
+                className="flex h-12 w-12 items-center justify-center text-muted-foreground transition hover:text-foreground"
+                aria-label={t("product.quantityDown")}
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <span className="w-10 text-center text-sm tabular-nums">{qty}</span>
+              <button
+                type="button"
+                onClick={() => setQty(qty + 1)}
+                className="flex h-12 w-12 items-center justify-center text-muted-foreground transition hover:text-foreground"
+                aria-label={t("product.quantityUp")}
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
+            <Button
+              variant="cta"
+              size="xl"
+              className="flex-1"
+              onClick={handleAddToCart}
+              disabled={!variant}
+            >
+              <ShoppingBag className="h-4 w-4" />
+              {t("product.addToCart")}
+            </Button>
+          </div>
+
+          {/* USP list */}
+          <ul className="mt-6 space-y-2.5 border-t border-border pt-6">
+            {uspList.map((text) => (
+              <li key={text} className="flex items-center gap-3 text-sm">
+                <Check className="h-4 w-4 shrink-0 text-accent" />
+                {text}
+              </li>
+            ))}
+          </ul>
+
+          {/* Accordion */}
+          <Accordion
+            type="single"
+            collapsible
+            className="mt-8 border-t border-border"
+          >
+            <AccordionItem value="details" className="border-border">
+              <AccordionTrigger className="font-mono text-xs uppercase tracking-[0.18em]">
+                {t("product.details")}
+              </AccordionTrigger>
+              <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                {t("product.detailsText")}
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="shipping" className="border-border">
+              <AccordionTrigger className="font-mono text-xs uppercase tracking-[0.18em]">
+                {t("product.shipping")}
+              </AccordionTrigger>
+              <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                {t("product.shippingText")}
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="materials" className="border-border">
+              <AccordionTrigger className="font-mono text-xs uppercase tracking-[0.18em]">
+                {t("product.materials")}
+              </AccordionTrigger>
+              <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                {t("product.materialsText")}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </div>
+
+      {/* Related */}
+      {related.length > 0 && (
+        <section className="mt-20">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <span className="kicker">{t("product.related")}</span>
+              <h2 className="headline-l mt-2">{t("product.relatedTitle")}</h2>
+            </div>
+          </div>
+          <Carousel>
+            <CarouselContent className="-ml-4">
+              {related.map((p) => (
+                <CarouselItem
+                  key={p.slug}
+                  className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
+                >
+                  <ProductCard product={p} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </section>
+      )}
+    </section>
+  );
+}
+
+/* ================================================================== */
+/* Demo product view (formats / sizes / frames)                        */
+/* ================================================================== */
+
+const Product = () => {
+  const { t } = useTranslation();
+  const { slug = "" } = useParams<{ slug: string }>();
+  const { addItem } = useCart();
+  const { products: catalogProducts, collections: catalogCollections } =
+    useCatalog();
+
+  const product = useMemo(
+    () => catalogProducts.find((p) => p.slug === slug),
+    [catalogProducts, slug],
+  );
+
+  const [format, setFormat] = useState<Format>("poster");
+  const [size, setSize] = useState<string>("50 × 70");
+  const [frame, setFrame] = useState<string | null>("white-oak");
+  const [qty, setQty] = useState(1);
+  const [unit, setUnit] = useState<"cm" | "in">("cm");
+
   const related = useMemo(() => {
     if (!product) return [];
-    const sameCollection = getCollectionProducts(product.collection).filter(
-      (p) => p.slug !== product.slug,
+    const same = catalogProducts.filter(
+      (p) => p.collection === product.collection && p.slug !== product.slug,
     );
-    if (sameCollection.length >= 4) return sameCollection.slice(0, 4);
-    const fill = products
-      .filter((p) => p.bestseller && p.slug !== product.slug)
-      .filter((p) => !sameCollection.some((s) => s.slug === p.slug));
-    return [...sameCollection, ...fill].slice(0, 4);
-  }, [product]);
+    if (same.length >= 4) return same.slice(0, 4);
+    const fill = catalogProducts.filter(
+      (p) => p.slug !== product.slug && !same.some((s) => s.slug === p.slug),
+    );
+    return [...same, ...fill].slice(0, 4);
+  }, [product, catalogProducts]);
 
   if (!product) {
     return (
-      <section className={`${PAD} flex min-h-[60vh] flex-col items-center justify-center gap-5 py-24 text-center`}>
+      <section
+        className={`${PAD} flex min-h-[60vh] flex-col items-center justify-center gap-5 py-24 text-center`}
+      >
         <h1 className="headline-l">{t("notFound.title")}</h1>
         <Link to="/">
           <Button variant="cta" size="xl">
@@ -110,8 +516,13 @@ const Product = () => {
     );
   }
 
-  const collection = getCollection(product.collection);
-  const gallery = product.images.length ? product.images : [product.image];
+  if (product.source === "shopify") {
+    return <ShopifyProductView product={product} />;
+  }
+
+  const collection = catalogCollections.find(
+    (c) => c.slug === product.collection,
+  );
   const sizes = product.formats[format];
   const currentVariant = sizes.find((v) => v.size === size) ?? sizes[0];
   const selectedFrame = product.frameOptions.find((f) => f.id === frame);
@@ -192,108 +603,12 @@ const Product = () => {
         </nav>
 
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
-          {/* Gallery: mobile swipe slider */}
-          <div className="lg:hidden">
-            <Carousel setApi={setGalleryApi}>
-              <CarouselContent className="ml-0">
-                {gallery.map((src, i) => (
-                  <CarouselItem key={`${src}-${i}`} className="pl-0">
-                    <div className="relative overflow-hidden bg-muted">
-                      <img
-                        src={src}
-                        alt={product.alt}
-                        crossOrigin="anonymous"
-                        className="aspect-[4/5] w-full object-cover"
-                      />
-                      <div className="absolute left-4 top-4 flex flex-col gap-1.5">
-                        {onSale && (
-                          <span className="bg-destructive px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-destructive-foreground">
-                            {t("product.sale")}
-                          </span>
-                        )}
-                        {product.bestseller && (
-                          <span className="bg-background/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground backdrop-blur-sm">
-                            {t("product.bestseller")}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="mt-3 flex justify-center gap-1.5">
-                {gallery.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => galleryApi?.scrollTo(i)}
-                    aria-label={t("product.imageThumb", {
-                      n: i + 1,
-                      count: gallery.length,
-                    })}
-                    className={cn(
-                      "h-1.5 rounded-full transition-all duration-300",
-                      activeImage === i ? "w-6 bg-foreground" : "w-1.5 bg-border",
-                    )}
-                  />
-                ))}
-              </div>
-            </Carousel>
-          </div>
-
-          {/* Gallery: desktop thumbnail rail on the left of the main image */}
-          <div className="hidden lg:sticky lg:top-32 lg:self-start lg:block">
-            <div className="flex gap-3">
-              <div className="flex shrink-0 flex-col gap-3">
-                {gallery.map((src, i) => (
-                  <button
-                    key={`${src}-${i}`}
-                    type="button"
-                    onClick={() => setActiveImage(i)}
-                    aria-label={t("product.imageThumb", {
-                      n: i + 1,
-                      count: gallery.length,
-                    })}
-                    className={cn(
-                      "relative aspect-[3/4] w-24 shrink-0 overflow-hidden bg-muted ring-1 transition md:w-32",
-                      activeImage === i
-                        ? "ring-foreground"
-                        : "opacity-70 ring-transparent hover:opacity-100",
-                    )}
-                  >
-                    <img
-                      src={src}
-                      alt=""
-                      crossOrigin="anonymous"
-                      className="h-full w-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-
-              <div className="relative flex-1 overflow-hidden bg-muted">
-                <img
-                  key={activeImage}
-                  src={gallery[activeImage]}
-                  alt={product.alt}
-                  crossOrigin="anonymous"
-                  className="aspect-[4/5] w-full object-cover"
-                />
-                <div className="absolute left-4 top-4 flex flex-col gap-1.5">
-                  {onSale && (
-                    <span className="bg-destructive px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-destructive-foreground">
-                      {t("product.sale")}
-                    </span>
-                  )}
-                  {product.bestseller && (
-                    <span className="bg-background/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground backdrop-blur-sm">
-                      {t("product.bestseller")}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <ProductGallery
+            images={product.images}
+            alt={product.alt}
+            saleLabel={onSale ? t("product.sale") : undefined}
+            bestsellerLabel={product.bestseller ? t("product.bestseller") : undefined}
+          />
 
           {/* Info */}
           <div>
@@ -542,8 +857,7 @@ const Product = () => {
                       <span className="mt-2 block text-xs leading-tight">
                         {fo.label}
                       </span>
-                      {format === "framed" &&
-                      currentVariant.compareAtPrice != null ? (
+                      {currentVariant.compareAtPrice != null ? (
                         frame === fo.id ? (
                           <span className="mt-0.5 block text-[11px] text-background/80">
                             {formatPrice(currentVariant.price + fo.upcharge)}

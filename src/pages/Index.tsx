@@ -21,16 +21,13 @@ import { SectionHeading } from "@/components/store/SectionHeading";
 import { TrustBadges } from "@/components/store/TrustBadges";
 import { Newsletter } from "@/components/store/Newsletter";
 import { Reveal } from "@/components/store/Reveal";
+import { useCatalog } from "@/lib/catalog";
 import {
-  collections,
-  products,
   HERO_IMAGE,
   INTERIOR_BEDROOM,
   INTERIOR_GALLERY,
   FORMAT_IMAGES,
 } from "@/lib/products";
-
-const bestsellers = products.filter((p) => p.bestseller);
 
 const PRESS = [
   "Elle Decor",
@@ -45,6 +42,13 @@ const SECTION = "py-[clamp(4rem,8vw,8rem)]";
 
 const Index = () => {
   const { t } = useTranslation();
+  const { products: catalogProducts, collections: catalogCollections } =
+    useCatalog();
+
+  const bestsellers = (() => {
+    const featured = catalogProducts.filter((p) => p.bestseller || p.featured);
+    return featured.length ? featured : catalogProducts.slice(0, 8);
+  })();
 
   const stats = [
     { value: "12k+", label: t("home.stats.homes") },
@@ -204,7 +208,7 @@ const Index = () => {
           subtitle={t("home.collections.subtitle")}
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {collections.map((c, i) => (
+          {catalogCollections.map((c, i) => (
             <Reveal key={c.slug} delay={i * 0.08}>
               <Link
                 to={`/collections/${c.slug}`}

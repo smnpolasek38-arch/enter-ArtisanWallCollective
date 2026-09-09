@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Facebook, Instagram, Youtube } from "lucide-react";
-import { collections } from "@/lib/products";
+import { useCatalog } from "@/lib/catalog";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
 const SOCIALS = [
@@ -12,6 +12,7 @@ const SOCIALS = [
 
 export const Footer = () => {
   const { t } = useTranslation();
+  const { collections } = useCatalog();
   const year = new Date().getFullYear();
 
   const columnTitle =

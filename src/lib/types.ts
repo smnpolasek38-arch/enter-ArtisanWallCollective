@@ -32,6 +32,17 @@ export interface Review {
   text: string;
 }
 
+/** A Shopify product variant (from the Storefront API). */
+export interface ShopifyVariant {
+  /** Storefront API variant id, e.g. "gid://shopify/ProductVariant/123". */
+  id: string;
+  title: string;
+  price: number;
+  compareAtPrice?: number;
+  availableForSale: boolean;
+  image?: string;
+}
+
 export type CollectionSlug = "abstract" | "botanical" | "architecture" | "figurative";
 
 export interface Collection {
@@ -62,4 +73,11 @@ export interface Product {
   rating: number;
   reviewCount: number;
   reviews: Review[];
+  /** "demo" for the built-in catalog, "shopify" when loaded from the Storefront API. */
+  source?: "demo" | "shopify";
+  shopifyId?: string;
+  shopifyVariants?: ShopifyVariant[];
+  minPrice?: number;
+  minComparePrice?: number;
+  hasSale?: boolean;
 }

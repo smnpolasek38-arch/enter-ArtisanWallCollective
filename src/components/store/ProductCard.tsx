@@ -13,16 +13,25 @@ import { RatingStars } from "./RatingStars";
 
 export const ProductCard = ({ product }: { product: Product }) => {
   const { t } = useTranslation();
-  const { addItem } = useCart();
-  const minPrice = productMinPrice(product);
-  const compare = productHasSale(product)
-    ? productMinComparePrice(product)
+  const { addItem, addVariant } = useCart();
+  const minPrice = product.minPrice ?? productMinPrice(product);
+  const onSale = product.hasSale ?? productHasSale(product);
+  const compare = onSale
+    ? product.minComparePrice ?? productMinComparePrice(product)
     : null;
-  const defaultVariant = product.formats.poster[0];
+  const defaultVariant = product.formats.poster?.[0];
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (product.source === "shopify") {
+      const variant =
+        product.shopifyVariants?.find((v) => v.availableForSale) ??
+        product.shopifyVariants?.[0];
+      if (variant) addVariant(product, variant, 1);
+      return;
+    }
+    if (!defaultVariant) return;
     addItem({
       product,
       format: "poster",
@@ -90,10 +99,14 @@ export const ProductCard = ({ product }: { product: Product }) => {
       </div>
 
       <div className="mt-2 flex items-center gap-2">
-        <RatingStars rating={product.rating} />
-        <span className="text-xs text-muted-foreground">
-          ({product.reviewCount})
-        </span>
+        {product.reviewCount > 0 ? (
+          <>
+            <RatingStars rating={product.rating || 0} />
+            <span className="text-xs text-muted-foreground">
+              ({product.reviewCount})
+            </span>
+          </>
+        ) : null}
       </div>
     </Link>
   );

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Menu, ShoppingBag } from "lucide-react";
-import { collections } from "@/lib/products";
+import { useCatalog } from "@/lib/catalog";
 import { useCart } from "@/context/CartContext";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -9,6 +9,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 export const Header = () => {
   const { t } = useTranslation();
   const { openCart, itemCount } = useCart();
+  const { collections } = useCatalog();
 
   const navLink =
     "text-sm font-bold uppercase tracking-[0.14em] text-muted-foreground transition hover:text-foreground";

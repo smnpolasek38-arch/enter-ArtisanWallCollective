@@ -94,6 +94,8 @@
   "product.usp3": "Ready to hang — hardware included",
   "product.usp4": "30-day returns, we cover the return label",
   "product.imageThumb": "Show image {{n}} of {{count}}",
+  "shopify.variant": "Options",
+  "shopify.soldOut": "Sold out",
   "product.trust.shipping": "Free shipping over $75",
   "product.trust.ship24h": "Ships in 24 hours",
   "product.trust.returns": "30-day money-back guarantee",

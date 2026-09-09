@@ -18,12 +18,27 @@ const Cart = () => {
     setQty,
     removeItem,
     freeShippingThreshold,
+    mode,
+    checkoutUrl,
   } = useCart();
 
-  const shipping = subtotal >= freeShippingThreshold ? 0 : 9;
-  const total = subtotal + shipping;
+  const isShopify = mode === "shopify";
+  const shipping = isShopify
+    ? null
+    : subtotal >= freeShippingThreshold
+      ? 0
+      : 9;
+  const total = shipping == null ? subtotal : subtotal + shipping;
   const progress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
   const remaining = freeShippingThreshold - subtotal;
+
+  const handleCheckout = () => {
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
+    } else {
+      toast(t("cart.checkoutNotice"), { position: "top-center" });
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -97,12 +112,16 @@ const Cart = () => {
                       {item.name}
                     </Link>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      {formatLabel(item.format)} · {item.size}
-                      {item.frame ? ` · ${item.frame}` : ""}
+                      {item.variantTitle ??
+                        [formatLabel(item.format), item.size, item.frame]
+                          .filter(Boolean)
+                          .join(" · ")}
                     </p>
-                    <div className="mt-2 flex items-center gap-1.5">
-                      <RatingStars rating={5} size="h-3 w-3" />
-                    </div>
+                    {!item.variantTitle && (
+                      <div className="mt-2 flex items-center gap-1.5">
+                        <RatingStars rating={5} size="h-3 w-3" />
+                      </div>
+                    )}
                   </div>
                   <div className="text-right">
                     {item.compareAtPrice != null && (
@@ -173,7 +192,11 @@ const Cart = () => {
             <div className="flex justify-between">
               <dt className="text-muted-foreground">{t("cart.shipping")}</dt>
               <dd className="font-medium">
-                {shipping === 0 ? t("cart.shippingFree") : formatPrice(shipping)}
+                {shipping == null
+                  ? t("cart.shippingCalculated")
+                  : shipping === 0
+                    ? t("cart.shippingFree")
+                    : formatPrice(shipping)}
               </dd>
             </div>
             <div className="flex justify-between border-t border-border pt-3 text-base">
@@ -185,9 +208,7 @@ const Cart = () => {
             variant="cta"
             size="xl"
             className="mt-6 w-full"
-            onClick={() =>
-              toast(t("cart.checkoutNotice"), { position: "top-center" })
-            }
+            onClick={handleCheckout}
           >
             {t("cart.checkout")}
             <ArrowRight className="h-4 w-4" />
@@ -206,9 +227,7 @@ const Cart = () => {
             variant="cta-outline"
             size="xl"
             className="w-full"
-            onClick={() =>
-              toast(t("cart.checkoutNotice"), { position: "top-center" })
-            }
+            onClick={handleCheckout}
           >
             {t("cart.express")}
           </Button>

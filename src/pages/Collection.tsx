@@ -13,12 +13,8 @@ import {
 import { ProductCard } from "@/components/store/ProductCard";
 import { Reveal } from "@/components/store/Reveal";
 import { TrustBadges } from "@/components/store/TrustBadges";
-import {
-  getCollection,
-  getCollectionProducts,
-  productMinPrice,
-  HERO_IMAGE,
-} from "@/lib/products";
+import { useCatalog, priceOf } from "@/lib/catalog";
+import { HERO_IMAGE } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
 type Tier = "all" | "lt100" | "100to200" | "gt200";
@@ -29,9 +25,20 @@ const PAD = "mx-auto max-w-[1440px] px-[clamp(1rem,3vw,2rem)]";
 const Collection = () => {
   const { t } = useTranslation();
   const { slug = "all" } = useParams<{ slug: string }>();
+  const { products: catalogProducts, collections: catalogCollections } =
+    useCatalog();
 
-  const collection = slug === "all" ? undefined : getCollection(slug);
-  const all = useMemo(() => getCollectionProducts(slug), [slug]);
+  const collection =
+    slug === "all"
+      ? undefined
+      : catalogCollections.find((c) => c.slug === slug);
+  const all = useMemo(
+    () =>
+      slug === "all"
+        ? catalogProducts
+        : catalogProducts.filter((p) => p.collection === slug),
+    [slug, catalogProducts],
+  );
 
   const [tier, setTier] = useState<Tier>("all");
   const [sort, setSort] = useState<Sort>("featured");
@@ -51,12 +58,12 @@ const Collection = () => {
   };
 
   const visible = useMemo(() => {
-    const filtered = all.filter((p) => matchesTier(productMinPrice(p)));
+    const filtered = all.filter((p) => matchesTier(priceOf(p)));
     const sorted = [...filtered];
     if (sort === "price-asc") {
-      sorted.sort((a, b) => productMinPrice(a) - productMinPrice(b));
+      sorted.sort((a, b) => priceOf(a) - priceOf(b));
     } else if (sort === "price-desc") {
-      sorted.sort((a, b) => productMinPrice(b) - productMinPrice(a));
+      sorted.sort((a, b) => priceOf(b) - priceOf(a));
     } else if (sort === "newest") {
       sorted.reverse();
     } else {

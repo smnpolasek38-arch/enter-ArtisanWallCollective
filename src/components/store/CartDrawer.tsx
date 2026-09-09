@@ -12,12 +12,8 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
-import {
-  formatLabel,
-  formatPrice,
-  productMinPrice,
-  products,
-} from "@/lib/products";
+import { useCatalog, priceOf } from "@/lib/catalog";
+import { formatLabel, formatPrice } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
 export const CartDrawer = () => {
@@ -31,14 +27,31 @@ export const CartDrawer = () => {
     subtotal,
     itemCount,
     freeShippingThreshold,
+    checkoutUrl,
   } = useCart();
+
+  const { products } = useCatalog();
 
   const progress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
   const remaining = freeShippingThreshold - subtotal;
 
   const recommendations = products
-    .filter((p) => p.bestseller && !items.some((i) => i.productSlug === p.slug))
+    .filter((p) => !items.some((i) => i.productSlug === p.slug))
     .slice(0, 3);
+
+  const itemMeta = (item: (typeof items)[number]) =>
+    item.variantTitle ??
+    [formatLabel(item.format), item.size, item.frame]
+      .filter(Boolean)
+      .join(" · ");
+
+  const handleCheckout = () => {
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
+    } else {
+      toast(t("cart.checkoutNotice"), { position: "top-center" });
+    }
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
@@ -105,8 +118,7 @@ export const CartDrawer = () => {
                         {item.name}
                       </p>
                       <p className="mt-0.5 text-xs text-muted-foreground">
-                        {formatLabel(item.format)} · {item.size}
-                        {item.frame ? ` · ${item.frame}` : ""}
+                        {itemMeta(item)}
                       </p>
                     </div>
                     <button
@@ -184,7 +196,7 @@ export const CartDrawer = () => {
                     {p.name}
                   </p>
                   <p className="text-[11px] text-muted-foreground">
-                    {formatPrice(productMinPrice(p))}
+                    {formatPrice(priceOf(p))}
                   </p>
                 </Link>
               ))}
@@ -205,9 +217,7 @@ export const CartDrawer = () => {
               variant="cta"
               size="xl"
               className="w-full"
-              onClick={() =>
-                toast(t("cart.checkoutNotice"), { position: "top-center" })
-              }
+              onClick={handleCheckout}
             >
               {t("cart.checkout")}
             </Button>
