@@ -1,0 +1,19 @@
+{%- comment -%} 404 {%- endcomment -%}
+<section class="page-width not-found">
+  <p class="not-found__code">404</p>
+  <h1 class="display-s not-found__title">{{ 'general.404.title' | t }}</h1>
+  <p class="not-found__text">{{ 'general.404.subtext' | t }}</p>
+  <div class="not-found__cta">
+    <a href="{{ routes.root_url }}" class="btn btn--primary btn--xl">
+      {{ 'general.404.home' | t }}
+      {% render 'icon', icon: 'arrow-right' %}
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "settings": []
+}
+{% endschema %}

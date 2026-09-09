@@ -1,0 +1,89 @@
+{%- comment -%} Featured collection slider {%- endcomment -%}
+{%- assign collection = section.settings.collection -%}
+{%- assign products_to_show = section.settings.products_to_show | default: 8 -%}
+
+<section class="section page-width">
+  <div class="section-heading">
+    <span class="kicker">{{ section.settings.kicker | default: 'sections.featured.kicker' | t }}</span>
+    <h2 class="headline-l section-heading__title">{{ section.settings.title | default: 'sections.featured.title' | t }}</h2>
+    <p class="section-heading__subtitle">{{ section.settings.subtitle | default: 'sections.featured.subtitle' | t }}</p>
+  </div>
+
+  {%- if collection and collection.products.size > 0 -%}
+    <div class="slider" data-slider>
+      <div class="slider__viewport">
+        <div class="slider__track" data-slider-track>
+          {%- for product in collection.products limit: products_to_show -%}
+            <div class="slider__slide">
+              {% render 'product-card', product: product %}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+      <div class="slider__footer">
+        <span class="slider__hint">{{ section.settings.slider_hint | default: 'Drag or use arrows' }}</span>
+        <div class="slider__arrows">
+          <button type="button" class="slider__arrow" data-slider-prev aria-label="{{ 'accessibility.previous' | t }}">
+            {% render 'icon', icon: 'arrow-left' %}
+          </button>
+          <button type="button" class="slider__arrow" data-slider-next aria-label="{{ 'accessibility.next' | t }}">
+            {% render 'icon', icon: 'arrow-right' %}
+          </button>
+        </div>
+      </div>
+    </div>
+  {%- else -%}
+    <p style="color:var(--color-muted-foreground)">
+      {{ 'collections.general.empty' | t }} Select a collection in the theme editor.
+    </p>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Choose your bestsellers collection."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "slider_hint",
+      "label": "Slider hint",
+      "default": "Drag or use arrows"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection"
+    }
+  ]
+}
+{% endschema %}

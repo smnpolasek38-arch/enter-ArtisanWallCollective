@@ -1,0 +1,6 @@
+{
+  "main": {
+    "type": "main-404"
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,63 @@
+{%- comment -%}
+  Product card. Usage: {% render 'product-card', product: product %}
+{%- endcomment -%}
+{%- assign on_sale = false -%}
+{%- if product.compare_at_price > product.price -%}
+  {%- assign on_sale = true -%}
+{%- endif -%}
+{%- assign is_bestseller = false -%}
+{%- if product.tags contains 'bestseller' -%}
+  {%- assign is_bestseller = true -%}
+{%- endif -%}
+
+<div class="product-card">
+  <div class="product-card__media">
+    <a href="{{ product.url }}" class="product-card__media-link" aria-label="{{ product.title | escape }}">
+      {%- if product.featured_image -%}
+        {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', class: 'product-card__img', alt: product.featured_image.alt | escape }}
+      {%- else -%}
+        <div class="product-card__img" style="background:var(--color-muted)"></div>
+      {%- endif -%}
+    </a>
+
+    {%- if on_sale or is_bestseller -%}
+      <div class="product-card__badges">
+        {%- if on_sale -%}
+          <span class="badge badge--sale">{{ 'products.product.sale' | t }}</span>
+        {%- endif -%}
+        {%- if is_bestseller -%}
+          <span class="badge badge--bestseller">{{ 'products.product.bestseller' | t }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if product.selected_or_first_available_variant.available -%}
+      <button
+        type="button"
+        class="product-card__quick-add"
+        data-quick-add="{{ product.selected_or_first_available_variant.id }}"
+        aria-label="{{ 'products.product.add_to_cart' | t }}: {{ product.title | escape }}"
+      >
+        {% render 'icon', icon: 'plus' %}
+      </button>
+    {%- endif -%}
+  </div>
+
+  <a href="{{ product.url }}" class="product-card__info">
+    <h3 class="product-card__name">{{ product.title }}</h3>
+    <div class="product-card__meta">
+      <span class="product-card__price">
+        {%- if product.price_varies -%}
+          {{ 'products.product.from' | t }} {{ product.price_min | money }}
+        {%- else -%}
+          {%- if on_sale -%}
+            <span class="price--sale">{{ product.price | money }}</span>
+            <s class="price__compare">{{ product.compare_at_price | money }}</s>
+          {%- else -%}
+            {{ product.price | money }}
+          {%- endif -%}
+        {%- endif -%}
+      </span>
+    </div>
+  </a>
+</div>

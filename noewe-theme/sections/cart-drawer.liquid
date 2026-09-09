@@ -1,0 +1,44 @@
+{%- comment -%} Cart drawer (overlay group) — rendered client-side via the Shopify Cart API {%- endcomment -%}
+<div class="cart-drawer" data-cart-drawer role="dialog" aria-modal="true" aria-label="{{ 'cart.title' | t }}">
+  <div class="cart-drawer__head">
+    <h2 class="cart-drawer__title">
+      {{ 'cart.title' | t }}
+      <span class="cart-drawer__count">(<span data-cart-count>0</span>)</span>
+    </h2>
+    <button type="button" class="cart-drawer__close header__icon-btn" data-cart-close aria-label="{{ 'general.close' | t }}">
+      {% render 'icon', icon: 'close' %}
+    </button>
+  </div>
+
+  <div class="cart-drawer__progress" data-cart-progress>
+    <p class="cart-drawer__progress-text" data-cart-progress-text></p>
+    <div class="cart-drawer__progress-track">
+      <div class="cart-drawer__progress-bar" data-cart-progress-bar style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="cart-drawer__items" data-cart-items>
+    {%- comment -%} Rendered by JavaScript {%- endcomment -%}
+  </div>
+
+  <div class="cart-drawer__foot" data-cart-foot style="display:none">
+    <div class="cart-drawer__subtotal">
+      <span class="cart-drawer__subtotal-label">{{ 'cart.subtotal' | t }}</span>
+      <span class="cart-drawer__subtotal-value" data-cart-subtotal>$0</span>
+    </div>
+    <form action="{{ routes.cart_url }}" method="post" novalidate>
+      <button type="submit" name="checkout" class="btn btn--primary btn--xl btn--block">
+        {{ 'cart.checkout' | t }}
+        {% render 'icon', icon: 'arrow-right' %}
+      </button>
+    </form>
+    <p class="cart-drawer__guarantee">{{ settings.cart_note | default: '30-day guarantee · Secure payment · Ships in 24h' }}</p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": []
+}
+{% endschema %}

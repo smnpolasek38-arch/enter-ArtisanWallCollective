@@ -1,0 +1,100 @@
+{%- comment -%} Editorial — image + features + CTA {%- endcomment -%}
+<section class="section--secondary" style="padding-block:var(--section-padding)">
+  <div class="page-width editorial">
+    <div data-reveal>
+      <div class="editorial__media">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'editorial__img', alt: section.settings.image.alt | escape, loading: 'lazy' }}
+        {%- else -%}
+          <img class="editorial__img" src="{{ 'noewe-interior-bedroom.png' | asset_url }}" alt="" loading="lazy">
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div data-reveal data-reveal-delay="100">
+      <span class="kicker">{{ section.settings.kicker | default: 'sections.editorial.kicker' | t }}</span>
+      <h2 class="headline-l editorial__title">{{ section.settings.title | default: 'sections.editorial.title' | t }}</h2>
+      <p class="editorial__text">{{ section.settings.text | default: 'sections.editorial.text' | t }}</p>
+
+      <ul class="editorial__features">
+        {%- for block in section.blocks -%}
+          <li class="editorial__feature">
+            <span class="editorial__feature-icon">{% render 'icon', icon: 'check' %}</span>
+            {{ block.settings.feature }}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <div class="editorial__cta">
+        <a href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}" class="btn btn--primary btn--xl">
+          {{ section.settings.cta_text | default: 'sections.editorial.cta' | t }}
+          {% render 'icon', icon: 'arrow-right' %}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Editorial",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Leave empty to use the bundled bedroom image."
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature",
+          "label": "Feature",
+          "default": "Printed on archival matte paper"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial",
+      "blocks": [
+        { "type": "feature", "settings": { "feature": "Printed on archival matte paper" } },
+        { "type": "feature", "settings": { "feature": "Framed by hand with FSC-certified oak" } },
+        { "type": "feature", "settings": { "feature": "Shipped ready to hang, worldwide" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

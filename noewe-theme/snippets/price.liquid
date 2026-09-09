@@ -1,0 +1,23 @@
+{%- comment -%}
+  Renders product price with sale compare-at. Usage: {% render 'price', product: product %}
+  Available for a specific variant via: {% render 'price', product: product, use_variant: true %}
+{%- endcomment -%}
+{%- if product == nil -%}{%- return -%}{%- endif -%}
+
+{%- assign target = product -%}
+{%- if use_variant and product.selected_or_first_available_variant -%}
+  {%- assign target = product.selected_or_first_available_variant -%}
+{%- endif -%}
+
+{%- if target.compare_at_price > target.price -%}
+  {%- assign on_sale = true -%}
+{%- endif -%}
+
+<div class="price">
+  {%- if on_sale -%}
+    <span class="price__sale price--sale">{{ target.price | money }}</span>
+    <s class="price__compare">{{ target.compare_at_price | money }}</s>
+  {%- else -%}
+    <span class="price__regular">{{ target.price | money }}</span>
+  {%- endif -%}
+</div>

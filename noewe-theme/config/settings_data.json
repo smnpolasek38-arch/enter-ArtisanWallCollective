@@ -1,0 +1,24 @@
+{
+  "current": {
+    "color_background": "#F9F7F2",
+    "color_foreground": "#1A1714",
+    "color_card": "#FBF9F5",
+    "color_secondary": "#EFE9DD",
+    "color_muted": "#F1ECE1",
+    "color_muted_foreground": "#6B645C",
+    "color_accent": "#85502D",
+    "color_destructive": "#BB2E23",
+    "color_border": "#E2DACB",
+    "page_width": 1440,
+    "section_padding": 7,
+    "radius": 2,
+    "show_announcement": true,
+    "announcement_text": "Autumn Sale · Up to 25% off · Free shipping over $75",
+    "free_shipping_threshold": 75,
+    "cart_note": "30-day guarantee · Secure payment · Ships in 24h",
+    "enable_cart_note": false,
+    "footer_shop_menu": "main-menu",
+    "footer_help_menu": "footer",
+    "footer_company_menu": "footer"
+  }
+}

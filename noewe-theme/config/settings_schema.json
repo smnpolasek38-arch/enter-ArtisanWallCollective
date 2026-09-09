@@ -1,0 +1,219 @@
+[
+  {
+    "name": "Theme info",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Noewe — fine wall art & prints. Theme version 1.0.0"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#F9F7F2"
+      },
+      {
+        "type": "color",
+        "id": "color_foreground",
+        "label": "Foreground (text & dark surfaces)",
+        "default": "#1A1714"
+      },
+      {
+        "type": "color",
+        "id": "color_card",
+        "label": "Cards",
+        "default": "#FBF9F5"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secondary background",
+        "default": "#EFE9DD"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Muted background",
+        "default": "#F1ECE1"
+      },
+      {
+        "type": "color",
+        "id": "color_muted_foreground",
+        "label": "Muted text",
+        "default": "#6B645C"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent (kickers, highlights)",
+        "default": "#85502D"
+      },
+      {
+        "type": "color",
+        "id": "color_destructive",
+        "label": "Destructive / sale",
+        "default": "#BB2E23"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Borders",
+        "default": "#E2DACB"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Noewe uses Cormorant Garamond for display type, Instrument Sans for body copy and DM Mono for labels. Fonts are loaded from Google Fonts."
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page width",
+        "min": 1100,
+        "max": 1600,
+        "step": 20,
+        "default": 1440,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "section_padding",
+        "label": "Section padding",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "default": 7,
+        "unit": "rem"
+      },
+      {
+        "type": "range",
+        "id": "radius",
+        "label": "Border radius",
+        "min": 0,
+        "max": 16,
+        "step": 1,
+        "default": 2,
+        "unit": "px"
+      }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_announcement",
+        "label": "Show announcement bar",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "announcement_text",
+        "label": "Announcement text",
+        "default": "Autumn Sale · Up to 25% off · Free shipping over $75"
+      },
+      {
+        "type": "url",
+        "id": "announcement_link",
+        "label": "Announcement link (optional)"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube URL"
+      }
+    ]
+  },
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "footer_shop_menu",
+        "label": "Shop menu",
+        "info": "Links shown in the Shop column. Create a menu in Navigation with your collections."
+      },
+      {
+        "type": "link_list",
+        "id": "footer_help_menu",
+        "label": "Help menu"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_company_menu",
+        "label": "Company menu"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "range",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold (amount)",
+        "min": 0,
+        "max": 500,
+        "step": 5,
+        "default": 75,
+        "unit": "$"
+      },
+      {
+        "type": "text",
+        "id": "cart_note",
+        "label": "Cart note",
+        "default": "30-day guarantee · Secure payment · Ships in 24h"
+      }
+    ]
+  },
+  {
+    "name": "Checkout",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_cart_note",
+        "label": "Enable order note",
+        "default": false
+      }
+    ]
+  }
+]

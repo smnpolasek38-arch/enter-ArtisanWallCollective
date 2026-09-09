@@ -1,0 +1,215 @@
+{
+  "hero": {
+    "type": "hero"
+  },
+  "featured-collection": {
+    "type": "featured-collection",
+    "settings": {
+      "products_to_show": 8
+    }
+  },
+  "stats-bar": {
+    "type": "stats-bar"
+  },
+  "collections-list": {
+    "type": "collections-list",
+    "blocks": [
+      {
+        "type": "collection",
+        "settings": {
+          "heading": "Abstract"
+        }
+      },
+      {
+        "type": "collection",
+        "settings": {
+          "heading": "Botanical"
+        }
+      },
+      {
+        "type": "collection",
+        "settings": {
+          "heading": "Architecture"
+        }
+      },
+      {
+        "type": "collection",
+        "settings": {
+          "heading": "Figurative"
+        }
+      }
+    ]
+  },
+  "press-bar": {
+    "type": "press-bar",
+    "blocks": [
+      { "type": "press", "settings": { "name": "Elle Decor" } },
+      { "type": "press", "settings": { "name": "Architectural Digest" } },
+      { "type": "press", "settings": { "name": "Kinfolk" } },
+      { "type": "press", "settings": { "name": "Monocle" } },
+      { "type": "press", "settings": { "name": "Vogue Living" } }
+    ]
+  },
+  "shop-by-format": {
+    "type": "shop-by-format",
+    "blocks": [
+      {
+        "type": "format",
+        "settings": {
+          "name": "Poster",
+          "description": "Printed on 210 gsm archival matte paper. Light, affordable, endlessly easy to switch up.",
+          "default_image": "noewe-amber-drift.png"
+        }
+      },
+      {
+        "type": "format",
+        "settings": {
+          "name": "Framed print",
+          "description": "Hand-framed in FSC-certified oak with acrylic glazing and museum mounting. Ready to hang.",
+          "default_image": "noewe-quiet-geometry.png"
+        }
+      },
+      {
+        "type": "format",
+        "settings": {
+          "name": "Canvas",
+          "description": "Gallery-wrapped canvas with an anti-sag support system. A statement that needs no frame.",
+          "default_image": "noewe-casa-arches.png"
+        }
+      }
+    ]
+  },
+  "editorial": {
+    "type": "editorial",
+    "blocks": [
+      { "type": "feature", "settings": { "feature": "Printed on archival matte paper" } },
+      { "type": "feature", "settings": { "feature": "Framed by hand with FSC-certified oak" } },
+      { "type": "feature", "settings": { "feature": "Shipped ready to hang, worldwide" } }
+    ]
+  },
+  "image-band": {
+    "type": "image-band"
+  },
+  "how-it-works": {
+    "type": "how-it-works",
+    "blocks": [
+      {
+        "type": "step",
+        "settings": {
+          "title": "Choose your piece",
+          "text": "Pick the artwork, format, size and frame that suits your room."
+        }
+      },
+      {
+        "type": "step",
+        "settings": {
+          "title": "We frame it by hand",
+          "text": "Printed on archival paper or canvas, framed and quality-checked within 24 hours."
+        }
+      },
+      {
+        "type": "step",
+        "settings": {
+          "title": "It hangs in your home",
+          "text": "Delivered ready to hang, worldwide, with a 30-day happiness guarantee."
+        }
+      }
+    ]
+  },
+  "testimonials": {
+    "type": "testimonials",
+    "blocks": [
+      {
+        "type": "testimonial",
+        "settings": {
+          "rating": 5,
+          "quote": "The colours are even richer in person. It completely changed the feel of our living room.",
+          "author": "Mara T., London"
+        }
+      },
+      {
+        "type": "testimonial",
+        "settings": {
+          "rating": 5,
+          "quote": "I was nervous buying art online — the frame quality settled it. Hand-finished and genuinely beautiful.",
+          "author": "Daniel K., Portland"
+        }
+      },
+      {
+        "type": "testimonial",
+        "settings": {
+          "rating": 5,
+          "quote": "Arrived in three days, ready to hang, and the print is flawless. Noewe is my go-to for gifts now.",
+          "author": "Priya S., Toronto"
+        }
+      }
+    ]
+  },
+  "trust-badges": {
+    "type": "trust-badges",
+    "blocks": [
+      { "type": "badge", "settings": { "icon": "truck", "title": "Free shipping", "text": "On orders over $75" } },
+      { "type": "badge", "settings": { "icon": "frame", "title": "Framed by hand", "text": "Shipped ready to hang" } },
+      { "type": "badge", "settings": { "icon": "rotate", "title": "30-day returns", "text": "Love it or send it back" } },
+      { "type": "badge", "settings": { "icon": "shield", "title": "Secure checkout", "text": "Shop with confidence" } }
+    ]
+  },
+  "faq": {
+    "type": "faq",
+    "blocks": [
+      {
+        "type": "faq",
+        "settings": {
+          "question": "How long does shipping take?",
+          "answer": "Orders are made and packed within 24 hours. Delivery takes 2–4 business days within the US and 5–9 internationally. You'll receive tracking the moment your order ships."
+        }
+      },
+      {
+        "type": "faq",
+        "settings": {
+          "question": "Are the frames ready to hang?",
+          "answer": "Yes. Every framed piece arrives with picture wire and a hardware kit, so it's ready to hang in minutes — no extra trips to the hardware store."
+        }
+      },
+      {
+        "type": "faq",
+        "settings": {
+          "question": "What if I don't love it?",
+          "answer": "Return it within 30 days for a full refund. We'll email you a prepaid return label — no restocking fees, no questions asked."
+        }
+      },
+      {
+        "type": "faq",
+        "settings": {
+          "question": "What materials do you use?",
+          "answer": "Prints are made on 210 gsm archival matte paper or gallery canvas with archival inks rated to last over 100 years. Frames are FSC-certified oak with shatterproof acrylic glazing."
+        }
+      },
+      {
+        "type": "faq",
+        "settings": {
+          "question": "Can I order a custom size?",
+          "answer": "We offer three sizes in every format. For larger commissions or custom colourways, email us at studio@noewe.art and we'll make it happen."
+        }
+      }
+    ]
+  },
+  "newsletter": {
+    "type": "newsletter"
+  },
+  "order": [
+    "hero",
+    "featured-collection",
+    "stats-bar",
+    "collections-list",
+    "press-bar",
+    "shop-by-format",
+    "editorial",
+    "image-band",
+    "how-it-works",
+    "testimonials",
+    "trust-badges",
+    "faq",
+    "newsletter"
+  ]
+}

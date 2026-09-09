@@ -1,0 +1,33 @@
+{%- comment -%} Stats strip {%- endcomment -%}
+<div class="stats">
+  <div class="page-width stats__grid">
+    <div class="stats__item">
+      <p class="stats__value">12k+</p>
+      <p class="stats__label">{{ 'sections.stats.homes' | t }}</p>
+    </div>
+    <div class="stats__item">
+      <p class="stats__value">4.9/5</p>
+      <p class="stats__label">{{ 'sections.stats.rating' | t }}</p>
+    </div>
+    <div class="stats__item">
+      <p class="stats__value">30-day</p>
+      <p class="stats__label">{{ 'sections.stats.returns' | t }}</p>
+    </div>
+    <div class="stats__item">
+      <p class="stats__value">100%</p>
+      <p class="stats__label">{{ 'sections.stats.oak' | t }}</p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Stats strip",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Stats strip"
+    }
+  ]
+}
+{% endschema %}

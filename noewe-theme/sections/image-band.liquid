@@ -1,0 +1,27 @@
+{%- comment -%} Full-width interior image band {%- endcomment -%}
+<div class="image-band section page-width" style="padding-block:0">
+  {%- if section.settings.image != blank -%}
+    {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'image-band__img', alt: section.settings.image.alt | escape, loading: 'lazy' }}
+  {%- else -%}
+    <img class="image-band__img" src="{{ 'noewe-interior-gallery.png' | asset_url }}" alt="" loading="lazy">
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Image band",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Leave empty to use the bundled interior gallery image."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image band"
+    }
+  ]
+}
+{% endschema %}

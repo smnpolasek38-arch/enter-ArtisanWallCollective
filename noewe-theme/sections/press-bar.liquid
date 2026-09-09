@@ -1,0 +1,53 @@
+{%- comment -%} Press bar — "As seen in" {%- endcomment -%}
+<div class="section page-width" style="padding-block:0">
+  <div class="press-bar">
+    <span class="kicker">{{ section.settings.kicker | default: 'sections.press.kicker' | t }}</span>
+    <div class="press-bar__list">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.name != blank -%}
+          <span class="press-bar__name">{{ block.settings.name }}</span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Press bar",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "press",
+      "name": "Publication",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Elle Decor"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Press bar",
+      "blocks": [
+        { "type": "press", "settings": { "name": "Elle Decor" } },
+        { "type": "press", "settings": { "name": "Architectural Digest" } },
+        { "type": "press", "settings": { "name": "Kinfolk" } },
+        { "type": "press", "settings": { "name": "Monocle" } },
+        { "type": "press", "settings": { "name": "Vogue Living" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

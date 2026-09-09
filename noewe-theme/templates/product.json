@@ -1,0 +1,14 @@
+{
+  "main": {
+    "type": "main-product"
+  },
+  "related": {
+    "type": "featured-collection",
+    "settings": {
+      "kicker": "Complete the room",
+      "title": "Pairs well with",
+      "products_to_show": 4
+    }
+  },
+  "order": ["main", "related"]
+}

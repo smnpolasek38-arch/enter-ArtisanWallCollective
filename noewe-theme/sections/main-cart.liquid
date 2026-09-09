@@ -1,0 +1,107 @@
+{%- comment -%} Main cart section {%- endcomment -%}
+<section class="page-width cart-page">
+  <h1 class="display-s cart-page__title">{{ 'cart.title' | t }}</h1>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="cart-page__grid">
+      <div>
+        <div class="cart-page__lines">
+          {%- for item in cart.items -%}
+            <div class="cart-page__line">
+              {%- if item.image -%}
+                {{ item.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: item.image.alt | escape }}
+              {%- endif -%}
+
+              <div>
+                <a href="{{ item.url }}" class="cart-line__name">{{ item.product.title }}</a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <p class="cart-line__meta">{{ item.variant.title }}</p>
+                {%- endunless -%}
+                <div class="qty-stepper" style="margin-top:0.75rem">
+                  <form action="{{ routes.cart_change_url }}" method="post" data-cart-line-form>
+                    <input type="hidden" name="line" value="{{ forloop.index }}">
+                    <input type="hidden" name="quantity" value="{{ item.quantity }}" data-line-qty>
+                    <button type="button" data-line-qty-change="-1" aria-label="{{ 'layout.cart.decrease' | t }}">{% render 'icon', icon: 'minus' %}</button>
+                    <span class="qty-stepper__value">{{ item.quantity }}</span>
+                    <button type="button" data-line-qty-change="1" aria-label="{{ 'layout.cart.increase' | t }}">{% render 'icon', icon: 'plus' %}</button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="cart-line__prices">
+                {%- if item.original_line_price > item.final_line_price -%}
+                  <p class="cart-line__compare">{{ item.original_line_price | money }}</p>
+                  <p class="cart-line__price cart-line__price--sale">{{ item.final_line_price | money }}</p>
+                {%- else -%}
+                  <p class="cart-line__price">{{ item.original_line_price | money }}</p>
+                {%- endif -%}
+                <button
+                  type="button"
+                  class="cart-line__remove"
+                  data-cart-line-remove
+                  data-remove-url="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0"
+                  aria-label="{{ 'layout.cart.remove' | t }}"
+                  style="margin-top:0.5rem"
+                >
+                  {% render 'icon', icon: 'trash' %}
+                </button>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+        <div style="margin-top:1.5rem">
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn--outline">
+            {{ 'cart.continue_shopping' | t }}
+          </a>
+        </div>
+      </div>
+
+      <aside class="cart-summary">
+        <h2 class="cart-summary__title">{{ 'cart.summary' | t }}</h2>
+        <div class="cart-summary__row">
+          <span>{{ 'layout.cart.subtotal' | t }}</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+        <div class="cart-summary__row">
+          <span>{{ 'layout.footer.shipping_returns' | t }}</span>
+          <span>—</span>
+        </div>
+
+        {%- if settings.enable_cart_note -%}
+          <form action="{{ routes.cart_url }}" method="post">
+            <div class="form-field" style="margin-top:1rem">
+              <label for="CartNote">{{ 'cart.notes' | t }}</label>
+              <textarea name="note" id="CartNote" rows="3">{{ cart.note }}</textarea>
+            </div>
+          </form>
+        {%- endif -%}
+
+        <form action="{{ routes.cart_url }}" method="post" novalidate>
+          <button type="submit" name="checkout" class="btn btn--primary btn--xl btn--block">
+            {{ 'cart.checkout' | t }}
+            {% render 'icon', icon: 'arrow-right' %}
+          </button>
+        </form>
+
+        <p class="cart-summary__tax-note">{{ 'cart.shipping_at_checkout' | t }}</p>
+        <p class="cart-summary__guarantee">{{ settings.cart_note | default: '30-day guarantee · Secure payment · Ships in 24h' }}</p>
+      </aside>
+    </div>
+  {%- else -%}
+    <div class="collection-empty" style="padding-block:4rem">
+      <p class="collection-empty__text">{{ 'cart.empty_text' | t }}</p>
+      <div class="mt-6">
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary btn--xl">
+          {{ 'cart.empty' | t }}
+        </a>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}

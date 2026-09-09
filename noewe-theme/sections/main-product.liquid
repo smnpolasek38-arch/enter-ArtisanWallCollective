@@ -1,0 +1,212 @@
+{%- comment -%} Main product section {%- endcomment -%}
+{%- if product == nil %}{% return %}{% endif -%}
+
+{%- assign on_sale = false -%}
+{%- if product.compare_at_price > product.price -%}
+  {%- assign on_sale = true -%}
+{%- endif -%}
+{%- assign is_bestseller = false -%}
+{%- if product.tags contains 'bestseller' -%}
+  {%- assign is_bestseller = true -%}
+{%- endif -%}
+
+<script type="application/json" id="ProductJson-{{ product.id }}">
+  {{ product.variants | json }}
+</script>
+
+<section class="page-width" data-product-root data-product-id="{{ product.id }}">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <a href="{{ routes.all_products_collection_url }}">{{ 'general.shop' | t }}</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span>{{ product.title }}</span>
+  </nav>
+
+  <div class="product">
+    <!-- Gallery -->
+    <div class="product-gallery">
+      <div class="product-gallery__media">
+        {%- if product.featured_image -%}
+          {{ product.featured_image | image_url: width: 1200 | image_tag: class: 'product-gallery__main-img', data_gallery_main: '', alt: product.featured_image.alt | escape }}
+        {%- endif -%}
+
+        {%- if on_sale or is_bestseller -%}
+          <div class="product-gallery__badges">
+            {%- if on_sale -%}
+              <span class="badge badge--sale">{{ 'products.product.sale' | t }}</span>
+            {%- endif -%}
+            {%- if is_bestseller -%}
+              <span class="badge badge--bestseller">{{ 'products.product.bestseller' | t }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if product.media.size > 1 -%}
+        <div class="product-gallery__thumbs">
+          {%- for media in product.media limit: 6 -%}
+            {%- if media.media_type == 'image' -%}
+              <button
+                type="button"
+                class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                data-thumb="{{ media | image_url: width: 600 }}"
+                data-thumb-alt="{{ media.alt | escape }}"
+                aria-label="{{ 'products.product.image_thumb' | t: n: forloop.index, count: product.media.size }}"
+              >
+                {{ media | image_url: width: 200 | image_tag: loading: 'lazy', alt: media.alt | escape }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Info -->
+    <div class="product-info">
+      {%- if product.vendor != blank -%}
+        <p class="product-info__vendor">{{ product.vendor }}</p>
+      {%- endif -%}
+      <h1 class="headline-l product-info__title">{{ product.title }}</h1>
+
+      <div class="product-info__price-row">
+        <span class="product-info__price">
+          {%- if product.price_varies -%}
+            <span class="price__regular">{{ 'products.product.from' | t }} {{ product.price_min | money }}</span>
+          {%- else -%}
+            <span class="price__regular{% if on_sale %} price--sale{% endif %}" data-price>{{ product.price | money }}</span>
+            {%- if on_sale -%}
+              <s class="price__compare" data-compare>{{ product.compare_at_price | money }}</s>
+            {%- endif -%}
+          {%- endif -%}
+        </span>
+        {%- if on_sale -%}
+          <span class="price__save" data-save>
+            {{ 'products.product.save' | t: amount: (product.compare_at_price_min | minus: product.price_min | money) }}
+          </span>
+        {%- endif -%}
+      </div>
+
+      {%- if product.description != blank -%}
+        <div class="product-info__description">{{ product.description }}</div>
+      {%- endif -%}
+
+      {%- comment -%} Variant form {%- endcomment -%}
+      <form class="product-form" data-product-form>
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
+
+        <div class="product-form__options">
+          {%- for option in product.options_with_values -%}
+            <div class="option-group" data-option-group data-option-name="{{ option.name | escape }}">
+              <span class="option-group__label">
+                {{ option.name }}:
+                <span data-selected-option>{{ option.selected_value }}</span>
+              </span>
+              <div class="option-group__values">
+                {%- for value in option.values -%}
+                  {%- assign value_soldout = false -%}
+                  {%- if product.available and product.variants.size == 1 -%}
+                    {%- unless product.selected_or_first_available_variant.available -%}
+                      {%- assign value_soldout = true -%}
+                    {%- endunless -%}
+                  {%- endif -%}
+                  <button
+                    type="button"
+                    class="option-btn{% if option.selected_value == value %} is-active{% endif %}"
+                    data-option-value="{{ value | escape }}"
+                  >
+                    {{ value }}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="product-form__buy">
+          <div class="product-form__qty">
+            <button type="button" data-qty-down aria-label="{{ 'layout.cart.decrease' | t }}">{% render 'icon', icon: 'minus' %}</button>
+            <input type="number" name="quantity" value="1" min="1" aria-label="{{ 'products.product.quantity' | t }}">
+            <button type="button" data-qty-up aria-label="{{ 'layout.cart.increase' | t }}">{% render 'icon', icon: 'plus' %}</button>
+          </div>
+          <button type="submit" class="btn btn--primary btn--xl product-form__submit" data-add-button>
+            {{ 'products.product.add_to_cart' | t }}
+          </button>
+        </div>
+      </form>
+
+      <div class="product-form__add-note">
+        {% render 'icon', icon: 'check' %}
+        {{ 'products.product.ships_24h' | t }}
+      </div>
+
+      <div class="product-usps">
+        <span class="product-usp">{% render 'icon', icon: 'check' %}{{ 'products.product.usp1' | t }}</span>
+        <span class="product-usp">{% render 'icon', icon: 'check' %}{{ 'products.product.usp2' | t }}</span>
+        <span class="product-usp">{% render 'icon', icon: 'check' %}{{ 'products.product.usp3' | t }}</span>
+        <span class="product-usp">{% render 'icon', icon: 'check' %}{{ 'products.product.usp4' | t }}</span>
+      </div>
+
+      <div class="product-accordions">
+        <div class="accordion" data-accordion>
+          <div class="accordion__item">
+            <button type="button" class="accordion__button" data-accordion-button aria-expanded="true">
+              {{ 'products.product.details' | t }}
+              <span class="accordion__icon">{% render 'icon', icon: 'plus' %}</span>
+            </button>
+            <div class="accordion__content">
+              <div class="accordion__content-inner">
+                <p>{{ section.settings.details_text | default: 'products.product.details_text' | t }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="accordion__item">
+            <button type="button" class="accordion__button" data-accordion-button aria-expanded="false">
+              {{ 'products.product.shipping' | t }}
+              <span class="accordion__icon">{% render 'icon', icon: 'plus' %}</span>
+            </button>
+            <div class="accordion__content">
+              <div class="accordion__content-inner">
+                <p>{{ section.settings.shipping_text | default: 'products.product.shipping_text' | t }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="accordion__item">
+            <button type="button" class="accordion__button" data-accordion-button aria-expanded="false">
+              {{ 'products.product.materials' | t }}
+              <span class="accordion__icon">{% render 'icon', icon: 'plus' %}</span>
+            </button>
+            <div class="accordion__content">
+              <div class="accordion__content-inner">
+                <p>{{ section.settings.materials_text | default: 'products.product.materials_text' | t }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product information",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "details_text",
+      "label": "Details text"
+    },
+    {
+      "type": "textarea",
+      "id": "shipping_text",
+      "label": "Shipping & returns text"
+    },
+    {
+      "type": "textarea",
+      "id": "materials_text",
+      "label": "Materials & care text"
+    }
+  ]
+}
+{% endschema %}

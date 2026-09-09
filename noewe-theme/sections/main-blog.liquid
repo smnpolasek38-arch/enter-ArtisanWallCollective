@@ -1,0 +1,72 @@
+{%- comment -%} Main blog section {%- endcomment -%}
+<section class="page-width" style="padding-block:3rem var(--section-padding)">
+  <div class="section-heading">
+    <span class="kicker">{{ section.settings.kicker | default: 'blogs.title' | t }}</span>
+    <h1 class="headline-l section-heading__title">{{ blog.title }}</h1>
+  </div>
+
+  {%- paginate blog.articles by section.settings.posts_per_page -%}
+    {%- if blog.articles.size > 0 -%}
+      <div class="blog-grid">
+        {%- for article in blog.articles -%}
+          <article class="article-card">
+            <a href="{{ article.url }}">
+              {%- if article.image -%}
+                {{ article.image | image_url: width: 800 | image_tag: class: 'article-card__img', loading: 'lazy', alt: article.image.alt | escape }}
+              {%- endif -%}
+              <h2 class="article-card__title">{{ article.title }}</h2>
+            </a>
+            <p class="article-card__date">{{ article.published_at | date: '%b %d, %Y' }}</p>
+            <p class="article-card__excerpt">
+              {{ article.excerpt_or_content | strip_html | truncate: 120 }}
+            </p>
+          </article>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" role="navigation" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a class="pagination__item" href="{{ paginate.previous.url }}">{% render 'icon', icon: 'arrow-left' %}</a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a class="pagination__item" href="{{ part.url }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}
+              <span class="pagination__item is-active" aria-current="page">{{ part.title }}</span>
+            {%- else -%}
+              <span class="pagination__item">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a class="pagination__item" href="{{ paginate.next.url }}">{% render 'icon', icon: 'arrow-right' %}</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- else -%}
+      <p style="color:var(--color-muted-foreground)">No posts yet.</p>
+    {%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "range",
+      "id": "posts_per_page",
+      "label": "Posts per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 9
+    }
+  ]
+}
+{% endschema %}

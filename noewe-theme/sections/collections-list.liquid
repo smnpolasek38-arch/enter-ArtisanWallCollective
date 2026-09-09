@@ -1,0 +1,104 @@
+{%- comment -%} Collections list — grid of collection tiles {%- endcomment -%}
+<section id="collections" class="section page-width" style="scroll-margin-top:6rem">
+  <div class="section-heading">
+    <span class="kicker">{{ section.settings.kicker | default: 'sections.collections.kicker' | t }}</span>
+    <h2 class="headline-l section-heading__title">{{ section.settings.title | default: 'sections.collections.title' | t }}</h2>
+    <p class="section-heading__subtitle">{{ section.settings.subtitle | default: 'sections.collections.subtitle' | t }}</p>
+  </div>
+
+  <div class="collection-tiles">
+    {%- for block in section.blocks -%}
+      {%- assign c = block.settings.collection -%}
+      {%- if c == nil %}{% continue %}{% endif -%}
+      {%- capture default_image -%}
+        {%- case c.handle -%}
+          {%- when 'abstract' -%}{{ 'noewe-amber-drift.png' | asset_url }}
+          {%- when 'botanical' -%}{{ 'noewe-mimosa-study.png' | asset_url }}
+          {%- when 'architecture' -%}{{ 'noewe-casa-arches.png' | asset_url }}
+          {%- when 'figurative' -%}{{ 'noewe-quiet-figure.png' | asset_url }}
+          {%- else -%}{{ 'noewe-amber-drift.png' | asset_url }}
+        {%- endcase -%}
+      {%- endcapture -%}
+      <a href="{{ c.url }}" class="collection-tile" data-reveal data-reveal-delay="{{ forloop.index0 | times: 80 }}">
+        <div class="collection-tile__media">
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: c.title | escape, loading: 'lazy' }}
+          {%- elsif c.image -%}
+            {{ c.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: c.title | escape, loading: 'lazy' }}
+          {%- elsif c.products.first.featured_image -%}
+            {{ c.products.first.featured_image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: c.title | escape, loading: 'lazy' }}
+          {%- else -%}
+            <img class="collection-tile__img" src="{{ default_image }}" alt="{{ c.title | escape }}" loading="lazy">
+          {%- endif -%}
+        </div>
+        <div class="collection-tile__overlay"></div>
+        <div class="collection-tile__content">
+          <h3 class="collection-tile__name">{{ block.settings.heading | default: c.title }}</h3>
+          <p class="collection-tile__cta">
+            {{ 'collections.general.shop_collection' | t }}
+            {% render 'icon', icon: 'arrow-right' %}
+          </p>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading override"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image override",
+          "info": "Leave empty to use the collection image or a bundled default."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections list",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}

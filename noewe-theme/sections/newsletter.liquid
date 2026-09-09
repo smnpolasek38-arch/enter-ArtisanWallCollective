@@ -1,0 +1,58 @@
+{%- comment -%} Newsletter {%- endcomment -%}
+<section class="section--dark" style="padding-block:var(--section-padding)">
+  <div class="page-width text-center" style="max-width:42rem">
+    <span class="kicker" style="color:var(--color-accent)">{{ section.settings.kicker | default: 'sections.newsletter.kicker' | t }}</span>
+    <h2 class="headline-l" style="margin-top:0.75rem">{{ section.settings.title | default: 'sections.newsletter.title' | t }}</h2>
+    <p style="margin-top:1rem;color:color-mix(in srgb, var(--color-background) 75%, transparent)">
+      {{ section.settings.subtitle | default: 'sections.newsletter.subtitle' | t }}
+    </p>
+
+    <div style="margin-top:2rem" data-newsletter-wrapper>
+      {%- form 'customer', class: 'newsletter__form', data-newsletter-form: '' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input
+          type="email"
+          name="contact[email]"
+          class="newsletter__input"
+          placeholder="{{ 'general.newsletter.placeholder' | t }}"
+          required
+        >
+        <button type="submit" class="btn btn--primary btn--xl">
+          {{ 'general.newsletter.button' | t }}
+          {% render 'icon', icon: 'arrow-right' %}
+        </button>
+      {%- endform -%}
+      <p class="newsletter__success" data-newsletter-success style="display:none">
+        {{ 'general.newsletter.success' | t }}
+      </p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

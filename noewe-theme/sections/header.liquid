@@ -1,0 +1,84 @@
+{%- comment -%} Header (header group) {%- endcomment -%}
+{%- assign menu = section.settings.menu | default: linklists['main-menu'] -%}
+{%- assign cart_count = cart.item_count -%}
+
+<header class="header" data-header>
+  <div class="page-width header__inner">
+    <button
+      type="button"
+      class="header__menu-btn"
+      data-menu-open
+      aria-label="{{ 'layout.header.open_menu' | t }}"
+      aria-controls="MobileMenu"
+    >
+      {% render 'icon', icon: 'menu' %}
+    </button>
+
+    <a href="{{ routes.root_url }}" class="header__logo" aria-label="{{ shop.name }}">
+      {{ shop.name }}
+    </a>
+
+    <nav class="header__nav" aria-label="Main navigation">
+      {%- if menu.links.size > 0 -%}
+        {%- for link in menu.links -%}
+          <a href="{{ link.url }}" class="header__nav-link"
+            {%- if link.current %} aria-current="page"{% endif %}>
+            {{ link.title }}
+          </a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}" class="header__nav-link">{{ 'general.shop' | t }}</a>
+      {%- endif -%}
+    </nav>
+
+    <div class="header__actions">
+      <a href="{{ routes.search_url }}" class="header__icon-btn" aria-label="{{ 'general.search' | t }}">
+        {% render 'icon', icon: 'search' %}
+      </a>
+      <button
+        type="button"
+        class="header__icon-btn"
+        data-open-cart
+        aria-label="{{ 'layout.header.open_cart' | t }}"
+        aria-haspopup="dialog"
+      >
+        {% render 'icon', icon: 'bag' %}
+        <span class="header__cart-count" data-cart-count{% unless cart_count > 0 %} style="display:none"{% endunless %}>
+          {{ cart_count }}
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="MobileMenu" data-mobile-menu aria-hidden="true">
+  <div class="mobile-menu__head">
+    <span class="mobile-menu__title">{{ shop.name }}</span>
+    <button type="button" data-menu-close class="header__icon-btn" aria-label="{{ 'general.close' | t }}">
+      {% render 'icon', icon: 'close' %}
+    </button>
+  </div>
+  <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+    {%- if menu.links.size > 0 -%}
+      {%- for link in menu.links -%}
+        <a href="{{ link.url }}" class="mobile-menu__link" data-menu-link>{{ link.title }}</a>
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}" class="mobile-menu__link" data-menu-link>{{ 'general.shop' | t }}</a>
+    {%- endif -%}
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Main menu",
+      "info": "Links shown in the navigation. Create a menu in Navigation with your collections."
+    }
+  ]
+}
+{% endschema %}

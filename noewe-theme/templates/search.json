@@ -1,0 +1,6 @@
+{
+  "main": {
+    "type": "main-search"
+  },
+  "order": ["main"]
+}

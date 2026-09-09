@@ -1,0 +1,90 @@
+{%- comment -%} Footer (footer group) {%- endcomment -%}
+{%- assign year = 'now' | date: '%Y' -%}
+<footer class="footer">
+  <div class="page-width">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="{{ routes.root_url }}" class="footer__logo">{{ shop.name }}</a>
+        <p class="footer__brand-tagline">{{ 'layout.footer.tagline' | t }}</p>
+        <div class="footer__social">
+          {%- if settings.social_instagram != blank -%}
+            <a href="{{ settings.social_instagram }}" aria-label="Instagram" target="_blank" rel="noopener">{% render 'icon', icon: 'instagram' %}</a>
+          {%- endif -%}
+          {%- if settings.social_facebook != blank -%}
+            <a href="{{ settings.social_facebook }}" aria-label="Facebook" target="_blank" rel="noopener">{% render 'icon', icon: 'facebook' %}</a>
+          {%- endif -%}
+          {%- if settings.social_youtube != blank -%}
+            <a href="{{ settings.social_youtube }}" aria-label="YouTube" target="_blank" rel="noopener">{% render 'icon', icon: 'youtube' %}</a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <p class="footer__col-title">{{ 'layout.footer.shop' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="footer__link">{{ 'general.shop' | t }}</a>
+        {%- assign shop_menu = section.settings.shop_menu | default: linklists['main-menu'] -%}
+        {%- if shop_menu.links.size > 0 -%}
+          {%- for link in shop_menu.links -%}
+            <a href="{{ link.url }}" class="footer__link">{{ link.title }}</a>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <div class="footer__col">
+        <p class="footer__col-title">{{ 'layout.footer.help' | t }}</p>
+        {%- assign help_menu = section.settings.help_menu -%}
+        {%- if help_menu.links.size > 0 -%}
+          {%- for link in help_menu.links -%}
+            <a href="{{ link.url }}" class="footer__link">{{ link.title }}</a>
+          {%- endfor -%}
+        {%- else -%}
+          <a href="{{ routes.root_url }}pages/shipping-returns" class="footer__link">{{ 'layout.footer.shipping_returns' | t }}</a>
+          <a href="{{ routes.root_url }}pages/care-guide" class="footer__link">{{ 'layout.footer.care_guide' | t }}</a>
+          <a href="{{ routes.root_url }}pages/faq" class="footer__link">{{ 'layout.footer.faq' | t }}</a>
+          <a href="{{ routes.root_url }}pages/contact" class="footer__link">{{ 'layout.footer.contact' | t }}</a>
+        {%- endif -%}
+      </div>
+
+      <div class="footer__col">
+        <p class="footer__col-title">{{ 'layout.footer.company' | t }}</p>
+        {%- assign company_menu = section.settings.company_menu -%}
+        {%- if company_menu.links.size > 0 -%}
+          {%- for link in company_menu.links -%}
+            <a href="{{ link.url }}" class="footer__link">{{ link.title }}</a>
+          {%- endfor -%}
+        {%- else -%}
+          <a href="{{ routes.root_url }}pages/about" class="footer__link">{{ 'layout.footer.about' | t }}</a>
+          <a href="{{ routes.root_url }}blogs/journal" class="footer__link">{{ 'layout.footer.journal' | t }}</a>
+          <a href="{{ routes.root_url }}pages/sustainability" class="footer__link">{{ 'layout.footer.sustainability' | t }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>{{ 'layout.footer.legal' | t: year: year }}</p>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "shop_menu",
+      "label": "Shop menu"
+    },
+    {
+      "type": "link_list",
+      "id": "help_menu",
+      "label": "Help menu"
+    },
+    {
+      "type": "link_list",
+      "id": "company_menu",
+      "label": "Company menu"
+    }
+  ]
+}
+{% endschema %}

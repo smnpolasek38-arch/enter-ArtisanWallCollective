@@ -1,0 +1,84 @@
+{%- comment -%} How it works — three steps {%- endcomment -%}
+<section class="section--secondary" style="padding-block:var(--section-padding)">
+  <div class="page-width">
+    <div class="section-heading section-heading--center">
+      <span class="kicker">{{ section.settings.kicker | default: 'sections.how.kicker' | t }}</span>
+      <h2 class="headline-l section-heading__title">{{ section.settings.title | default: 'sections.how.title' | t }}</h2>
+    </div>
+
+    <div class="how-grid">
+      {%- for block in section.blocks -%}
+        <div class="how-step" data-reveal data-reveal-delay="{{ forloop.index0 | times: 100 }}">
+          <span class="how-step__number">0{{ forloop.index }}</span>
+          <h3 class="how-step__title">{{ block.settings.title }}</h3>
+          <p class="how-step__text">{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "How it works",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "How it works",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Choose your piece",
+            "text": "Pick the artwork, format, size and frame that suits your room."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "We frame it by hand",
+            "text": "Printed on archival paper or canvas, framed and quality-checked within 24 hours."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "It hangs in your home",
+            "text": "Delivered ready to hang, worldwide, with a 30-day happiness guarantee."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

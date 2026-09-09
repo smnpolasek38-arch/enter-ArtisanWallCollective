@@ -1,0 +1,101 @@
+{%- comment -%} Testimonials {%- endcomment -%}
+<section class="section page-width">
+  <div class="section-heading section-heading--center">
+    <span class="kicker">{{ section.settings.kicker | default: 'sections.testimonials.kicker' | t }}</span>
+    <h2 class="headline-l section-heading__title">{{ section.settings.title | default: 'sections.testimonials.title' | t }}</h2>
+    <p class="section-heading__subtitle">{{ section.settings.subtitle | default: 'sections.testimonials.subtitle' | t }}</p>
+  </div>
+
+  <div class="testimonials-grid">
+    {%- for block in section.blocks -%}
+      <figure class="testimonial" data-reveal data-reveal-delay="{{ forloop.index0 | times: 80 }}">
+        <span class="testimonial__quote-icon">{% render 'icon', icon: 'quote' %}</span>
+        <blockquote class="testimonial__quote">“{{ block.settings.quote }}”</blockquote>
+        <figcaption class="testimonial__foot">
+          {% render 'rating-stars', rating: block.settings.rating | default: 5 %}
+          <p class="testimonial__author">{{ block.settings.author }}</p>
+          <p class="testimonial__verified">{{ 'sections.testimonials.verified' | t }}</p>
+        </figcaption>
+      </figure>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The colours are even richer in person. It completely changed the feel of our living room.",
+            "author": "Mara T., London"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I was nervous buying art online — the frame quality settled it. Hand-finished and genuinely beautiful.",
+            "author": "Daniel K., Portland"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Arrived in three days, ready to hang, and the print is flawless. Noewe is my go-to for gifts now.",
+            "author": "Priya S., Toronto"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

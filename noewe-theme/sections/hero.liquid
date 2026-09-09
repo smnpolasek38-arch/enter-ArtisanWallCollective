@@ -1,0 +1,86 @@
+{%- comment -%} Hero {%- endcomment -%}
+<section class="hero">
+  {%- if section.settings.image != blank -%}
+    {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'hero__media', alt: section.settings.image.alt | escape, loading: 'eager', fetchpriority: 'high' }}
+  {%- else -%}
+    <img
+      class="hero__media"
+      src="{{ 'noewe-hero.png' | asset_url }}"
+      alt=""
+      width="2000"
+      height="1500"
+      loading="eager"
+      fetchpriority="high"
+    >
+  {%- endif -%}
+  <div class="hero__overlay"></div>
+
+  <div class="page-width hero__content">
+    <span class="kicker hero__kicker" data-reveal>{{ section.settings.kicker | default: 'sections.hero.kicker' | t }}</span>
+    <h1 class="display-l hero__title" data-reveal data-reveal-delay="80">{{ section.settings.title | default: 'sections.hero.title' | t }}</h1>
+    <p class="hero__subtitle" data-reveal data-reveal-delay="160">{{ section.settings.subtitle | default: 'sections.hero.subtitle' | t }}</p>
+    <div class="hero__actions" data-reveal data-reveal-delay="240">
+      <a href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}" class="btn btn--inverse btn--xl">
+        {{ section.settings.cta_text | default: 'sections.hero.cta' | t }}
+        {% render 'icon', icon: 'arrow-right' %}
+      </a>
+      <a href="{{ section.settings.cta_secondary_link | default: '#collections' }}" class="btn btn--outline-light btn--xl">
+        {{ section.settings.cta_secondary_text | default: 'sections.hero.cta_secondary' | t }}
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image",
+      "info": "Leave empty to use the bundled Noewe hero image."
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Primary button text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_text",
+      "label": "Secondary button text"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_link",
+      "label": "Secondary button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

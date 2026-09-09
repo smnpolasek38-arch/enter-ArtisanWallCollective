@@ -1,0 +1,13 @@
+{%- comment -%}
+  Renders a 5-star rating row. Usage: {% render 'rating-stars', rating: 4.9 %}
+{%- endcomment -%}
+<span class="rating-stars" role="img" aria-label="{{ 'products.product.rating' | t }}">
+  {%- assign full = rating | floor -%}
+  {%- for i in (1..5) -%}
+    {%- if i <= full -%}
+      <span class="star">{% render 'icon', icon: 'star' %}</span>
+    {%- else -%}
+      <span class="star" style="fill:none;color:var(--color-border)">{% render 'icon', icon: 'star' %}</span>
+    {%- endif -%}
+  {%- endfor -%}
+</span>

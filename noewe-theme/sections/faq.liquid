@@ -1,0 +1,115 @@
+{%- comment -%} FAQ accordion {%- endcomment -%}
+<section class="section page-width">
+  <div class="section-heading section-heading--center">
+    <span class="kicker">{{ section.settings.kicker | default: 'sections.faq.kicker' | t }}</span>
+    <h2 class="headline-l section-heading__title">{{ section.settings.title | default: 'sections.faq.title' | t }}</h2>
+    <p class="section-heading__subtitle">{{ section.settings.subtitle | default: 'sections.faq.subtitle' | t }}</p>
+  </div>
+
+  <div class="max-w-3xl">
+    <div class="accordion" data-accordion>
+      {%- for block in section.blocks -%}
+        <div class="accordion__item">
+          <button
+            type="button"
+            class="accordion__button"
+            data-accordion-button
+            aria-expanded="false"
+            aria-controls="faq-{{ forloop.index }}"
+          >
+            {{ block.settings.question }}
+            <span class="accordion__icon">{% render 'icon', icon: 'plus' %}</span>
+          </button>
+          <div class="accordion__content" id="faq-{{ forloop.index }}">
+            <div class="accordion__content-inner">
+              <p>{{ block.settings.answer }}</p>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "Orders are made and packed within 24 hours. Delivery takes 2–4 business days within the US and 5–9 internationally. You'll receive tracking the moment your order ships."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Are the frames ready to hang?",
+            "answer": "Yes. Every framed piece arrives with picture wire and a hardware kit, so it's ready to hang in minutes — no extra trips to the hardware store."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What if I don't love it?",
+            "answer": "Return it within 30 days for a full refund. We'll email you a prepaid return label — no restocking fees, no questions asked."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What materials do you use?",
+            "answer": "Prints are made on 210 gsm archival matte paper or gallery canvas with archival inks rated to last over 100 years. Frames are FSC-certified oak with shatterproof acrylic glazing."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Can I order a custom size?",
+            "answer": "We offer three sizes in every format. For larger commissions or custom colourways, email us at studio@noewe.art and we'll make it happen."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

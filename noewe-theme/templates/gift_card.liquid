@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gift card — {{ shop.name }}</title>
+    {{ 'noewe.css' | asset_url | stylesheet_tag }}
+    <style>
+      body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+      .gift-card { max-width: 30rem; width: 100%; text-align: center; }
+      .gift-card__amount { font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 500; }
+      .gift-card__code { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; border: 1px dashed var(--color-border); background: var(--color-card); font-family: "DM Mono", monospace; letter-spacing: 0.2em; }
+    </style>
+    {{ content_for_header }}
+  </head>
+  <body class="template-gift-card">
+    <main class="page-width gift-card">
+      <h1 class="display-s">{{ shop.name }}</h1>
+      <p class="kicker" style="margin-top:1rem">Gift card</p>
+      <p class="gift-card__amount" style="margin-top:1.5rem">{{ gift_card.initial_value | money }}</p>
+      <p style="margin-top:1rem;color:var(--color-muted-foreground)">
+        {%- if gift_card.enabled -%}
+          Balance: {{ gift_card.balance | money }}
+        {%- else -%}
+          This gift card has been disabled.
+        {%- endif -%}
+      </p>
+      <p class="gift-card__code">{{ gift_card.code | format_code }}</p>
+      <p style="font-size:14px;color:var(--color-muted-foreground)">
+        To redeem, enter this code at checkout or
+        <a href="{{ gift_card.url }}" style="text-decoration:underline">open the gift card page</a>.
+      </p>
+      <div style="margin-top:2rem">
+        <a href="{{ shop.url }}" class="btn btn--primary">{{ shop.name }} — {{ 'general.shop' | t }}</a>
+      </div>
+    </main>
+  </body>
+</html>

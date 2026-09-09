@@ -1,0 +1,54 @@
+{%- comment -%} Main list-collections section {%- endcomment -%}
+<section class="section page-width">
+  <div class="section-heading">
+    <span class="kicker">{{ section.settings.kicker | default: 'sections.collections.kicker' | t }}</span>
+    <h1 class="headline-l section-heading__title">{{ section.settings.title | default: 'sections.collections.title' | t }}</h1>
+  </div>
+
+  <div class="collection-tiles">
+    {%- for collection in collections -%}
+      {%- if collection.products_count == 0 and section.settings.hide_empty %}{% continue %}{% endif -%}
+      <a href="{{ collection.url }}" class="collection-tile">
+        <div class="collection-tile__media">
+          {%- if collection.image -%}
+            {{ collection.image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: collection.title | escape, loading: 'lazy' }}
+          {%- elsif collection.products.first.featured_image -%}
+            {{ collection.products.first.featured_image | image_url: width: 900 | image_tag: class: 'collection-tile__img', alt: collection.title | escape, loading: 'lazy' }}
+          {%- endif -%}
+        </div>
+        <div class="collection-tile__overlay"></div>
+        <div class="collection-tile__content">
+          <h2 class="collection-tile__name">{{ collection.title }}</h2>
+          <p class="collection-tile__cta">
+            {{ 'collections.general.shop_collection' | t }}
+            {% render 'icon', icon: 'arrow-right' %}
+          </p>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_empty",
+      "label": "Hide empty collections",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

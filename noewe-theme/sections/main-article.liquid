@@ -1,0 +1,47 @@
+{%- comment -%} Main article section {%- endcomment -%}
+<section class="page-width page-content">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <a href="{{ blog.url }}">{{ blog.title }}</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span>{{ article.title }}</span>
+  </nav>
+
+  <span class="kicker">{{ article.published_at | date: '%b %d, %Y' }}</span>
+  <h1 class="display-s" style="margin-top:0.75rem">{{ article.title }}</h1>
+  {%- if article.image -%}
+    {{ article.image | image_url: width: 1600 | image_tag: style: 'margin:2rem 0;border-radius:var(--radius);width:100%;object-fit:cover;aspect-ratio:16/9', loading: 'lazy', alt: article.image.alt | escape }}
+  {%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+
+  {%- if blog.comments_enabled? -%}
+    <div style="margin-top:3rem;border-top:1px solid var(--color-border);padding-top:2rem">
+      <h2 class="headline-s">{{ 'blogs.comments' | t }}</h2>
+      {%- comment -%} Basic comment form {%- endcomment -%}
+      {% form 'new_comment', article %}
+        {{ form.errors | default_errors }}
+        <div class="form-field">
+          <label for="CommentAuthor">{{ 'customer.first_name' | t }}</label>
+          <input type="text" name="comment[author]" id="CommentAuthor" required>
+        </div>
+        <div class="form-field">
+          <label for="CommentEmail">{{ 'customer.email' | t }}</label>
+          <input type="email" name="comment[email]" id="CommentEmail" required>
+        </div>
+        <div class="form-field">
+          <label for="CommentBody">Comment</label>
+          <textarea name="comment[body]" id="CommentBody" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn--primary">{{ 'blogs.comments' | t }}</button>
+      {% endform %}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": []
+}
+{% endschema %}

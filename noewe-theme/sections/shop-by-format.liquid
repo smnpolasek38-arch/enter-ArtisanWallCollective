@@ -1,0 +1,124 @@
+{%- comment -%} Shop by format — Poster / Framed print / Canvas tiles {%- endcomment -%}
+<section class="section page-width">
+  <div class="section-heading">
+    <span class="kicker">{{ section.settings.kicker | default: 'sections.formats.kicker' | t }}</span>
+    <h2 class="headline-l section-heading__title">{{ section.settings.title | default: 'sections.formats.title' | t }}</h2>
+    <p class="section-heading__subtitle">{{ section.settings.subtitle | default: 'sections.formats.subtitle' | t }}</p>
+  </div>
+
+  <div class="format-tiles">
+    {%- for block in section.blocks -%}
+      <a href="{{ block.settings.link | default: routes.all_products_collection_url }}" class="format-tile" data-reveal data-reveal-delay="{{ forloop.index0 | times: 80 }}">
+        <div class="format-tile__media">
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 1000 | image_tag: class: 'format-tile__img', alt: block.settings.name | escape, loading: 'lazy' }}
+          {%- elsif block.settings.default_image != blank -%}
+            <img class="format-tile__img" src="{{ block.settings.default_image }}" alt="{{ block.settings.name | escape }}" loading="lazy">
+          {%- endif -%}
+        </div>
+        <div class="format-tile__content">
+          <div>
+            <h3 class="format-tile__name">{{ block.settings.name }}</h3>
+            <p class="format-tile__desc">{{ block.settings.description }}</p>
+          </div>
+          <span class="format-tile__arrow">{% render 'icon', icon: 'arrow-right' %}</span>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop by format",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "format",
+      "name": "Format tile",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "default_image",
+          "label": "Bundled default image",
+          "options": [
+            { "value": "", "label": "None" },
+            { "value": "noewe-amber-drift.png", "label": "Poster (Amber Drift)" },
+            { "value": "noewe-quiet-geometry.png", "label": "Framed (Quiet Geometry)" },
+            { "value": "noewe-casa-arches.png", "label": "Canvas (Casa Arches)" }
+          ],
+          "info": "Used when no image is uploaded."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop by format",
+      "blocks": [
+        {
+          "type": "format",
+          "settings": {
+            "name": "Poster",
+            "description": "Printed on 210 gsm archival matte paper. Light, affordable, endlessly easy to switch up.",
+            "default_image": "noewe-amber-drift.png"
+          }
+        },
+        {
+          "type": "format",
+          "settings": {
+            "name": "Framed print",
+            "description": "Hand-framed in FSC-certified oak with acrylic glazing and museum mounting. Ready to hang.",
+            "default_image": "noewe-quiet-geometry.png"
+          }
+        },
+        {
+          "type": "format",
+          "settings": {
+            "name": "Canvas",
+            "description": "Gallery-wrapped canvas with an anti-sag support system. A statement that needs no frame.",
+            "default_image": "noewe-casa-arches.png"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

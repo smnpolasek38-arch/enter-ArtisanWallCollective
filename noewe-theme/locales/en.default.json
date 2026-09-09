@@ -1,0 +1,261 @@
+{
+  "general": {
+    "search": "Search",
+    "menu": "Menu",
+    "close": "Close",
+    "view": "View",
+    "shop": "Shop all",
+    "open": "Open",
+    "read_more": "Read more",
+    "back": "Back",
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you were looking for doesn't exist or has moved.",
+      "home": "Back to home"
+    },
+    "newsletter": {
+      "placeholder": "Your email address",
+      "button": "Subscribe",
+      "success": "Welcome to Noewe — check your inbox for your code.",
+      "error": "Please enter a valid email address."
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close": "Close dialog",
+    "next": "Next slide",
+    "previous": "Previous slide"
+  },
+  "layout": {
+    "cart": {
+      "title": "Your cart",
+      "empty": "Your cart is empty",
+      "empty_text": "Fill it with pieces that make your walls feel like yours.",
+      "browse": "Browse bestsellers",
+      "checkout": "Checkout",
+      "subtotal": "Subtotal",
+      "free_shipping_progress": "You're {{ amount }} away from free shipping",
+      "free_shipping_reached": "You've unlocked free shipping",
+      "recommendations": "Complete the set",
+      "remove": "Remove item",
+      "increase": "Increase quantity",
+      "decrease": "Decrease quantity"
+    },
+    "header": {
+      "announcement": "Autumn Sale · Up to 25% off · Free shipping over $75",
+      "open_menu": "Open menu",
+      "open_cart": "Open cart"
+    },
+    "footer": {
+      "tagline": "Museum-quality wall art for considered homes.",
+      "shop": "Shop",
+      "help": "Help",
+      "shipping_returns": "Shipping & returns",
+      "care_guide": "Care guide",
+      "faq": "FAQ",
+      "contact": "Contact us",
+      "company": "Company",
+      "about": "Our story",
+      "journal": "Journal",
+      "sustainability": "Sustainability",
+      "legal": "© {{ year }} Noewe. All rights reserved."
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "sale": "Sale",
+      "bestseller": "Bestseller",
+      "rating": "Rated {{ rating }} out of 5",
+      "save": "Save {{ amount }}",
+      "from": "From",
+      "quantity": "Quantity",
+      "vendor": "Vendor",
+      "option": "Option",
+      "description": "Description",
+      "details": "Details",
+      "shipping": "Shipping & returns",
+      "materials": "Materials & care",
+      "details_text": "Each print is produced on 210 gsm archival matte paper with a subtle textured finish, then hand-framed in our workshop. Frames use FSC-certified oak and shatterproof acrylic glazing.",
+      "shipping_text": "Free worldwide shipping on orders over $75. Prints are rolled in acid-free tissue and shipped in rigid tubes or protective crates. You have 30 days to return any piece — we'll even cover the return label.",
+      "materials_text": "Dust frames with a soft dry cloth and keep out of direct sunlight to preserve colour. Canvas prints ship ready to hang with an anti-sag support system.",
+      "image_thumb": "Show image {{ n }} of {{ count }}",
+      "related": "Complete the room",
+      "related_title": "Pairs well with",
+      "usp1": "Archival inks rated to last 100+ years",
+      "usp2": "FSC-certified oak frames, made by hand",
+      "usp3": "Ready to hang — hardware included",
+      "usp4": "30-day returns, we cover the return label",
+      "shipping_free": "Free shipping over $75",
+      "ships_24h": "Ships in 24 hours",
+      "guarantee_30": "30-day money-back guarantee"
+    }
+  },
+  "collections": {
+    "general": {
+      "view_all": "View all",
+      "shop_collection": "Shop the collection",
+      "items_with_count": "{{ count }} pieces",
+      "empty": "No products in this collection yet.",
+      "all": "All artworks"
+    },
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "sort": {
+      "title": "Sort by",
+      "best_selling": "Best selling",
+      "title_ascending": "Alphabetically, A–Z",
+      "title_descending": "Alphabetically, Z–A",
+      "price_ascending": "Price, low to high",
+      "price_descending": "Price, high to low",
+      "created_descending": "Newest first"
+    },
+    "filters": {
+      "title": "Filters",
+      "sort_by": "Sort by",
+      "apply": "Apply",
+      "clear": "Clear all"
+    }
+  },
+  "sections": {
+    "hero": {
+      "kicker": "Autumn Collection",
+      "title": "Art that makes a room feel like yours",
+      "subtitle": "Museum-quality posters, framed prints and canvas wall art — chosen by curators, made to be lived with.",
+      "cta": "Shop bestsellers",
+      "cta_secondary": "Explore collections"
+    },
+    "featured": {
+      "kicker": "Bestsellers",
+      "title": "The pieces people can't stop buying",
+      "subtitle": "A shortlist of prints and frames selected for how they change a room."
+    },
+    "stats": {
+      "homes": "Happy homes",
+      "rating": "Average rating",
+      "returns": "Free returns",
+      "oak": "FSC-certified oak"
+    },
+    "collections": {
+      "kicker": "Collections",
+      "title": "Find your room's new centrepiece",
+      "subtitle": "Four curations, endless combinations. Start with the room you want to transform."
+    },
+    "press": {
+      "kicker": "As seen in"
+    },
+    "formats": {
+      "kicker": "Shop by format",
+      "title": "Every piece, three ways",
+      "subtitle": "From a flat poster to a gallery-wrapped canvas — choose how your art lives on your wall."
+    },
+    "editorial": {
+      "kicker": "Interior inspiration",
+      "title": "Designed to be lived with",
+      "text": "Every Noewe piece is printed on archival 210 gsm matte paper or gallery canvas, framed by hand in our workshop, and finished with museum mounting. No plastic, no compromise.",
+      "feature1": "Printed on archival matte paper",
+      "feature2": "Framed by hand with FSC-certified oak",
+      "feature3": "Shipped ready to hang, worldwide",
+      "cta": "Browse the full collection"
+    },
+    "how": {
+      "kicker": "How it works",
+      "title": "From our studio to your wall",
+      "one_title": "Choose your piece",
+      "one_text": "Pick the artwork, format, size and frame that suits your room.",
+      "two_title": "We frame it by hand",
+      "two_text": "Printed on archival paper or canvas, framed and quality-checked within 24 hours.",
+      "three_title": "It hangs in your home",
+      "three_text": "Delivered ready to hang, worldwide, with a 30-day happiness guarantee."
+    },
+    "testimonials": {
+      "kicker": "Reviews",
+      "title": "Loved in thousands of homes",
+      "subtitle": "4.9/5 average from over 12,000 verified reviews.",
+      "verified": "Verified buyer"
+    },
+    "trust": {
+      "free_shipping_title": "Free shipping",
+      "free_shipping_text": "On orders over $75",
+      "framed_title": "Framed by hand",
+      "framed_text": "Shipped ready to hang",
+      "returns_title": "30-day returns",
+      "returns_text": "Love it or send it back",
+      "secure_title": "Secure checkout",
+      "secure_text": "Shop with confidence"
+    },
+    "faq": {
+      "kicker": "Questions",
+      "title": "Everything you need to know",
+      "subtitle": "The details that make buying art online feel safe.",
+      "q1": "How long does shipping take?",
+      "a1": "Orders are made and packed within 24 hours. Delivery takes 2–4 business days within the US and 5–9 internationally. You'll receive tracking the moment your order ships.",
+      "q2": "Are the frames ready to hang?",
+      "a2": "Yes. Every framed piece arrives with picture wire and a hardware kit, so it's ready to hang in minutes — no extra trips to the hardware store.",
+      "q3": "What if I don't love it?",
+      "a3": "Return it within 30 days for a full refund. We'll email you a prepaid return label — no restocking fees, no questions asked.",
+      "q4": "What materials do you use?",
+      "a4": "Prints are made on 210 gsm archival matte paper or gallery canvas with archival inks rated to last over 100 years. Frames are FSC-certified oak with shatterproof acrylic glazing.",
+      "q5": "Can I order a custom size?",
+      "a5": "We offer three sizes in every format. For larger commissions or custom colourways, email us at studio@noewe.art and we'll make it happen."
+    },
+    "newsletter": {
+      "kicker": "Stay close",
+      "title": "10% off your first order",
+      "subtitle": "Join the Noewe list for early access to new drops, interiors ideas, and a one-time welcome code."
+    }
+  },
+  "customer": {
+    "account": "Account",
+    "login": "Log in",
+    "register": "Create account",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot your password?",
+    "reset_password": "Reset password",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "orders": "Orders",
+    "addresses": "Addresses",
+    "order_number": "Order",
+    "order_date": "Date",
+    "order_total": "Total",
+    "order_payment": "Payment status",
+    "order_fulfillment": "Fulfillment status",
+    "dashboard": "Welcome back",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add_address": "Add address",
+    "log_out": "Log out"
+  },
+  "cart": {
+    "title": "Your cart",
+    "summary": "Order summary",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "shipping_at_checkout": "Taxes and shipping calculated at checkout.",
+    "continue_shopping": "Continue shopping",
+    "empty": "Your cart is empty",
+    "empty_text": "Fill it with pieces that make your walls feel like yours.",
+    "notes": "Order note",
+    "guarantee": "30-day guarantee · Secure payment · Ships in 24h"
+  },
+  "blogs": {
+    "title": "Journal",
+    "read_more": "Read more",
+    "comments": "Comments"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search our store",
+    "results": "{{ count }} results",
+    "no_results": "No results for “{{ terms }}”.",
+    "view_all": "View all products"
+  }
+}

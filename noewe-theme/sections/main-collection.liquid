@@ -1,0 +1,102 @@
+{%- comment -%} Main collection section {%- endcomment -%}
+{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+
+<section class="page-width">
+  <div class="collection-hero">
+    <span class="collection-hero__kicker">{{ section.settings.kicker | default: 'collections.general.view_all' | t }}</span>
+    <h1 class="display-s collection-hero__title">
+      {%- if collection.title == blank -%}
+        {{ 'collections.general.all' | t }}
+      {%- else -%}
+        {{ collection.title }}
+      {%- endif -%}
+    </h1>
+    {%- if collection.description != blank -%}
+      <p class="collection-hero__blurb">{{ collection.description }}</p>
+    {%- endif -%}
+  </div>
+
+  {%- paginate collection.products by section.settings.products_per_page -%}
+    <div class="collection-toolbar">
+      <span class="collection-toolbar__count">
+        {{ 'collections.product_count.other' | t: count: collection.products_count }}
+      </span>
+      <form class="collection-sort" action="{{ collection.url }}" method="get">
+        <label for="SortBy-{{ section.id }}">{{ 'collections.sort.title' | t }}</label>
+        <select id="SortBy-{{ section.id }}" name="sort_by" aria-label="{{ 'collections.sort.title' | t }}">
+          {%- for option in collection.sort_options -%}
+            <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>
+              {{ option.name }}
+            </option>
+          {%- endfor -%}
+        </select>
+        <noscript>
+          <button type="submit" class="btn btn--primary">{{ 'general.view' | t }}</button>
+        </noscript>
+      </form>
+    </div>
+
+    {%- if collection.products.size > 0 -%}
+      <div class="product-grid">
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" role="navigation" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a class="pagination__item" href="{{ paginate.previous.url }}" aria-label="{{ 'accessibility.previous' | t }}">
+              {% render 'icon', icon: 'arrow-left' %}
+            </a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a class="pagination__item" href="{{ part.url }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}
+              <span class="pagination__item is-active" aria-current="page">{{ part.title }}</span>
+            {%- else -%}
+              <span class="pagination__item">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a class="pagination__item" href="{{ paginate.next.url }}" aria-label="{{ 'accessibility.next' | t }}">
+              {% render 'icon', icon: 'arrow-right' %}
+            </a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- else -%}
+      <div class="collection-empty">
+        <p class="collection-empty__text">{{ 'collections.general.empty' | t }}</p>
+        <div class="mt-6">
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">
+            {{ 'general.shop' | t }}
+          </a>
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 16
+    }
+  ]
+}
+{% endschema %}
