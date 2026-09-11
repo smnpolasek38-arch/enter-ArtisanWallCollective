@@ -3,11 +3,14 @@ import type { Collection, Product, ShopifyVariant } from "./types";
 /**
  * Shopify headless configuration.
  *
- * Set `storeDomain` (e.g. "yourstore.myshopify.com") and a Storefront API
- * access token (starts with "shpat_", created in Shopify Admin → Settings →
- * Apps and sales channels → Develop apps → Storefront API access scopes).
- * Storefront API tokens are designed by Shopify to be publishable in
- * frontend code, so they are safe to keep in the app bundle.
+ * Set `storeDomain` (e.g. "yourstore.myshopify.com") and the **Storefront API**
+ * access token from Shopify Admin → Settings → Apps and sales channels →
+ * Develop apps → your app → Storefront API integration.
+ *
+ * Use the *Storefront API* access token (a 32-character public token), NOT the
+ * Admin API token that starts with "shpat_" — that one is secret and must never
+ * be shipped in frontend code. Storefront API tokens are designed by Shopify to
+ * be publishable in frontend code, so they are safe to keep in the app bundle.
  */
 export const SHOPIFY_CONFIG = {
   storeDomain: "7yqn60-s2.myshopify.com",
