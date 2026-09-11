@@ -14,9 +14,19 @@ import type { Collection, Product, ShopifyVariant } from "./types";
  */
 export const SHOPIFY_CONFIG = {
   storeDomain: "7yqn60-s2.myshopify.com",
-  storefrontAccessToken: "",
+  storefrontAccessToken: "c7d5ea7869f105eab95fc202dd9548a2",
   apiVersion: "2026-07",
+  /**
+   * Storefront API market context. Prices are shown in USD, so the cart must
+   * resolve the same market — otherwise Shopify falls back to the shop's
+   * default market and the cart can come back in a different currency (e.g.
+   * CZK) than the prices on the page.
+   */
+  countryCode: "US",
 };
+
+/** GraphQL market directive — keeps prices and cart in one currency. */
+const IN_CONTEXT = `@inContext(country: ${SHOPIFY_CONFIG.countryCode})`;
 
 export const isShopifyConfigured = (): boolean =>
   Boolean(
@@ -122,6 +132,7 @@ export const mapShopifyProduct = (
   node.variants?.edges.forEach(({ node: v }) => {
     if (v.image?.url && !images.includes(v.image.url)) images.push(v.image.url);
   });
+  const tagSet = new Set((node.tags ?? []).map((t) => t.toLowerCase()));
 
   const shopifyVariants: ShopifyVariant[] = (
     node.variants?.edges ?? []
@@ -152,8 +163,10 @@ export const mapShopifyProduct = (
     formats: {} as Product["formats"],
     frameOptions: [],
     tags: node.tags ?? [],
-    featured: false,
-    bestseller: false,
+    // Shopify tags drive the storefront badges and the homepage carousel:
+    // tag a product "bestseller" or "featured" in Shopify to surface it.
+    featured: tagSet.has("featured"),
+    bestseller: tagSet.has("bestseller"),
     rating: 0,
     reviewCount: 0,
     reviews: [],
@@ -173,7 +186,7 @@ export const getShopifyProducts = async (
 ): Promise<Product[]> => {
   const data = await shopifyFetch<{
     products: { edges: { node: ShopifyProductNode }[] };
-  }>(`query Products($first: Int!) {
+  }>(`query Products($first: Int!) ${IN_CONTEXT} {
     products(first: $first) { edges { node { ${PRODUCT_FIELDS} } } }
   }`, { first });
   return data.products.edges.map(({ node }) => mapShopifyProduct(node, "all"));
@@ -184,7 +197,7 @@ export const getShopifyProductByHandle = async (
 ): Promise<Product | null> => {
   const data = await shopifyFetch<{
     productByHandle: ShopifyProductNode | null;
-  }>(`query Product($handle: String!) {
+  }>(`query Product($handle: String!) ${IN_CONTEXT} {
     productByHandle(handle: $handle) { ${PRODUCT_FIELDS} }
   }`, { handle });
   return data.productByHandle
@@ -216,7 +229,7 @@ export const getShopifyCollections = async (
 ): Promise<Collection[]> => {
   const data = await shopifyFetch<{
     collections: { edges: { node: ShopifyCollectionNode }[] };
-  }>(`query Collections($first: Int!) {
+  }>(`query Collections($first: Int!) ${IN_CONTEXT} {
     collections(first: $first) { edges { node { id handle title description image { url } } } }
   }`, { first });
   return data.collections.edges.map(({ node }) =>
@@ -233,7 +246,7 @@ export const getShopifyCollectionProducts = async (
     collectionByHandle: {
       products: { edges: { node: ShopifyProductNode }[] };
     } | null;
-  }>(`query CollectionProducts($handle: String!, $first: Int!) {
+  }>(`query CollectionProducts($handle: String!, $first: Int!) ${IN_CONTEXT} {
     collectionByHandle(handle: $handle) {
       products(first: $first) { edges { node { ${PRODUCT_FIELDS} } } }
     }
@@ -335,7 +348,7 @@ export const createShopifyCart = async (
   quantity: number,
 ): Promise<ShopifyCart> => {
   const data = await shopifyFetch<{ cartCreate: { cart: CartNode | null } }>(
-    `mutation CartCreate($merchandiseId: ID!, $quantity: Int!) {
+    `mutation CartCreate($merchandiseId: ID!, $quantity: Int!) ${IN_CONTEXT} {
       cartCreate(input: { lines: [{ merchandiseId: $merchandiseId, quantity: $quantity }] }) {
         cart { ${CART_FIELDS} }
       }
@@ -348,7 +361,7 @@ export const createShopifyCart = async (
 
 export const getShopifyCart = async (cartId: string): Promise<ShopifyCart> => {
   const data = await shopifyFetch<{ cart: CartNode | null }>(
-    `query Cart($cartId: ID!) { cart(id: $cartId) { ${CART_FIELDS} } }`,
+    `query Cart($cartId: ID!) ${IN_CONTEXT} { cart(id: $cartId) { ${CART_FIELDS} } }`,
     { cartId },
   );
   if (!data.cart) throw new ShopifyError("Cart not found.");
@@ -363,7 +376,7 @@ export const addShopifyCartLine = async (
   const data = await shopifyFetch<{
     cartLinesAdd: { cart: CartNode | null };
   }>(
-    `mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+    `mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) ${IN_CONTEXT} {
       cartLinesAdd(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } }
     }`,
     { cartId, lines: [{ merchandiseId, quantity }] },
@@ -380,7 +393,7 @@ export const updateShopifyCartLine = async (
   const data = await shopifyFetch<{
     cartLinesUpdate: { cart: CartNode | null };
   }>(
-    `mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+    `mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) ${IN_CONTEXT} {
       cartLinesUpdate(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } }
     }`,
     { cartId, lines: [{ id: lineId, quantity }] },
@@ -396,7 +409,7 @@ export const removeShopifyCartLine = async (
   const data = await shopifyFetch<{
     cartLinesRemove: { cart: CartNode | null };
   }>(
-    `mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+    `mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) ${IN_CONTEXT} {
       cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { ${CART_FIELDS} } }
     }`,
     { cartId, lineIds },

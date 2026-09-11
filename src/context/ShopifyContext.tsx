@@ -34,6 +34,9 @@ const loadCatalog = async () => {
       products.forEach((p) => {
         if (p.shopifyId) byId.set(p.shopifyId, p);
       });
+      // Collections often have no image of their own, which would render blank
+      // tiles on the homepage — fall back to the first product's image.
+      if (!c.image && products[0]?.image) c.image = products[0].image;
     }),
   );
   return { collections, products: Array.from(byId.values()) };
