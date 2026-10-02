@@ -157,7 +157,7 @@ const Index = () => {
       </section>
 
       {/* ============ Collections ============ */}
-      <section id="collections" className={`${PAD} ${SECTION} scroll-mt-28`}>
+      <section id="collections" className={`${PAD} py-[clamp(2rem,3.5vw,3.5rem)] scroll-mt-28`}>
         <SectionHeading kicker={t("home.collections.kicker")} title={t("home.collections.title")} subtitle={t("home.collections.subtitle")} />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {catalogCollections.map((c, i) => <Reveal key={c.slug} delay={i * 0.08}>
